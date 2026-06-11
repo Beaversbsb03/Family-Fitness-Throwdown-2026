@@ -337,44 +337,11 @@
 
 </div>
 
-<script type="module">
-// Firebase imports
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyD1GAOXZG7jslv0lmIGw0xB1UJGVYmvxDo",
-  authDomain: "family-fitness-throwdown.firebaseapp.com",
-  projectId: "family-fitness-throwdown",
-  storageBucket: "family-fitness-throwdown.firebasestorage.app",
-  messagingSenderId: "221851860500",
-  appId: "1:221851860500:web:f4097b47eb8b2b18a87101"
-};
-
-const _app = initializeApp(firebaseConfig);
-const _db = getFirestore(_app);
-const _doc = doc(_db, 'contest', 'data');
-
-// Expose Firebase functions to global scope
-window._fetchData = async function() {
-  try {
-    const snap = await getDoc(_doc);
-    if (snap.exists()) return snap.data();
-    return null;
-  } catch(e) { console.error('Fetch error:', e); return null; }
-};
-
-window._pushData = async function(data) {
-  try {
-    await setDoc(_doc, data);
-    return true;
-  } catch(e) { console.error('Push error:', e); return false; }
-};
-</script>
-
 <script>
-// Main app code
-const firebaseConfig = null; // already initialized above
+// Firebase REST API - no module imports needed
+const FB_PROJECT = 'family-fitness-throwdown';
+const FB_API_KEY = 'AIzaSyD1GAOXZG7jslv0lmIGw0xB1UJGVYmvxDo';
+const FB_URL = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents/contest/data`;
 let S = { settings:{ startDate:'',weeks:8,fee:50,winner:500 }, participants:[], logs:[], weighIns:[] };
 let radios = { workout:'none', fastfood:'yes', fasting:'none' };
 
@@ -386,22 +353,70 @@ const CONTEST_DOC = doc(db, 'contest', 'data');
 
 async function fetchData() {
   try {
-    const data = await window._fetchData();
-    if (data) S = data;
+    const r = await fetch(`${FB_URL}?key=${FB_API_KEY}`);
+    if (!r.ok) return false;
+    const d = await r.json();
+    if (d.fields) {
+      S = firestoreToJS(d.fields);
+    }
     return true;
-  } catch(e) {
-    console.error('Fetch error:', e);
-    return false;
+  } catch(e) { console.error('Fetch error:', e); return false; }
+}
+
+function firestoreToJS(fields) {
+  const obj = {};
+  for (const [k, v] of Object.entries(fields)) {
+    if (v.stringValue !== undefined) obj[k] = v.stringValue;
+    else if (v.integerValue !== undefined) obj[k] = parseInt(v.integerValue);
+    else if (v.doubleValue !== undefined) obj[k] = v.doubleValue;
+    else if (v.booleanValue !== undefined) obj[k] = v.booleanValue;
+    else if (v.arrayValue !== undefined) obj[k] = (v.arrayValue.values || []).map(item => {
+      if (item.mapValue) return firestoreToJS(item.mapValue.fields || {});
+      if (item.stringValue !== undefined) return item.stringValue;
+      if (item.integerValue !== undefined) return parseInt(item.integerValue);
+      if (item.doubleValue !== undefined) return item.doubleValue;
+      if (item.booleanValue !== undefined) return item.booleanValue;
+      return null;
+    });
+    else if (v.mapValue !== undefined) obj[k] = firestoreToJS(v.mapValue.fields || {});
+    else if (v.nullValue !== undefined) obj[k] = null;
   }
+  return obj;
+}
+
+function jsToFirestore(obj) {
+  const fields = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === null || v === undefined) fields[k] = { nullValue: null };
+    else if (typeof v === 'string') fields[k] = { stringValue: v };
+    else if (typeof v === 'boolean') fields[k] = { booleanValue: v };
+    else if (typeof v === 'number') {
+      if (Number.isInteger(v)) fields[k] = { integerValue: v.toString() };
+      else fields[k] = { doubleValue: v };
+    }
+    else if (Array.isArray(v)) fields[k] = { arrayValue: { values: v.map(item => {
+      if (item === null) return { nullValue: null };
+      if (typeof item === 'string') return { stringValue: item };
+      if (typeof item === 'boolean') return { booleanValue: item };
+      if (typeof item === 'number') return Number.isInteger(item) ? { integerValue: item.toString() } : { doubleValue: item };
+      if (typeof item === 'object') return { mapValue: { fields: jsToFirestore(item) } };
+      return { nullValue: null };
+    })}};
+    else if (typeof v === 'object') fields[k] = { mapValue: { fields: jsToFirestore(v) } };
+  }
+  return fields;
 }
 
 async function pushData() {
   try {
-    return await window._pushData(S);
-  } catch(e) {
-    console.error('Push error:', e);
-    return false;
-  }
+    const body = { fields: jsToFirestore(S) };
+    const r = await fetch(`${FB_URL}?key=${FB_API_KEY}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return r.ok;
+  } catch(e) { console.error('Push error:', e); return false; }
 }
 
 // ── INIT ───────────────────────────────────────────────────────
