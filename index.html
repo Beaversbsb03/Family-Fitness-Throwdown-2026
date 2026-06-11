@@ -338,11 +338,10 @@
 </div>
 
 <script type="module">
-// Firebase imports - must be first
+// Firebase imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyD1GAOXZG7jslv0lmIGw0xB1UJGVYmvxDo",
   authDomain: "family-fitness-throwdown.firebaseapp.com",
@@ -351,6 +350,31 @@ const firebaseConfig = {
   messagingSenderId: "221851860500",
   appId: "1:221851860500:web:f4097b47eb8b2b18a87101"
 };
+
+const _app = initializeApp(firebaseConfig);
+const _db = getFirestore(_app);
+const _doc = doc(_db, 'contest', 'data');
+
+// Expose Firebase functions to global scope
+window._fetchData = async function() {
+  try {
+    const snap = await getDoc(_doc);
+    if (snap.exists()) return snap.data();
+    return null;
+  } catch(e) { console.error('Fetch error:', e); return null; }
+};
+
+window._pushData = async function(data) {
+  try {
+    await setDoc(_doc, data);
+    return true;
+  } catch(e) { console.error('Push error:', e); return false; }
+};
+</script>
+
+<script>
+// Main app code
+const firebaseConfig = null; // already initialized above
 let S = { settings:{ startDate:'',weeks:8,fee:50,winner:500 }, participants:[], logs:[], weighIns:[] };
 let radios = { workout:'none', fastfood:'yes', fasting:'none' };
 
@@ -362,10 +386,8 @@ const CONTEST_DOC = doc(db, 'contest', 'data');
 
 async function fetchData() {
   try {
-    const snap = await getDoc(CONTEST_DOC);
-    if (snap.exists()) {
-      S = snap.data();
-    }
+    const data = await window._fetchData();
+    if (data) S = data;
     return true;
   } catch(e) {
     console.error('Fetch error:', e);
@@ -375,8 +397,7 @@ async function fetchData() {
 
 async function pushData() {
   try {
-    await setDoc(CONTEST_DOC, S);
-    return true;
+    return await window._pushData(S);
   } catch(e) {
     console.error('Push error:', e);
     return false;
