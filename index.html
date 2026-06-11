@@ -337,9 +337,11 @@
 
 </div>
 
-<script>
-// ── CONFIGURATION ──────────────────────────────────────────────
-// JSONBin.io free tier — data persists and syncs across all devices
+<script type="module">
+// Firebase imports - must be first
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyD1GAOXZG7jslv0lmIGw0xB1UJGVYmvxDo",
@@ -353,8 +355,6 @@ let S = { settings:{ startDate:'',weeks:8,fee:50,winner:500 }, participants:[], 
 let radios = { workout:'none', fastfood:'yes', fasting:'none' };
 
 // ── FIREBASE STORAGE ───────────────────────────────────────────
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
