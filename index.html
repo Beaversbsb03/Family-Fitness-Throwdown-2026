@@ -266,11 +266,11 @@ input:focus,select:focus{border-color:var(--fire);}
       <div class="rule-row"><div><div>19 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 3pm</div></div><span class="pts-pill pill-purple">+3 pts</span></div>
       <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">21+ hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 5pm</div></div><span class="pts-pill pill-purple">+4 pts</span></div>
       <div class="rules-header" style="margin-top:12px;">Weekly weigh-in — bonus & penalty</div>
-      <div class="rule-row"><div><div>Lost 1% of starting weight</div></div><span class="pts-pill pill-amber">+4 pts</span></div>
-      <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Lost 2%+ of starting weight</div></div><span class="pts-pill pill-amber">+8 pts</span></div>
+      <div class="rule-row"><div><div>Lost 1% vs previous week's weight</div><div class="rule-row-sub">Week 1 compares to starting weight</div></div><span class="pts-pill pill-amber">+4 pts</span></div>
+      <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Lost 2%+ vs previous week's weight</div><div class="rule-row-sub">Higher tier only</div></div><span class="pts-pill pill-amber">+8 pts</span></div>
       <div class="rule-row"><span>Under 1% change either way</span><span class="pts-pill pill-gray">0 pts</span></div>
-      <div class="rule-row"><div>Gained 1% of starting weight</div><span class="pts-pill pill-red">-4 pts</span></div>
-      <div class="rule-row"><div style="color:var(--white);font-weight:600;">Gained 2%+ of starting weight</div><span class="pts-pill pill-red">-8 pts</span></div>
+      <div class="rule-row"><div>Gained 1% vs previous week's weight</div><span class="pts-pill pill-red">-4 pts</span></div>
+      <div class="rule-row"><div style="color:var(--white);font-weight:600;">Gained 2%+ vs previous week's weight</div><span class="pts-pill pill-red">-8 pts</span></div>
       <div class="rules-header" style="margin-top:12px;">Prizes</div>
       <div class="prize-row">
         <div class="prize-item"><div class="prize-icon">🥇</div><div class="prize-amount">$500</div><div class="prize-desc">Cash — 1st place</div></div>
@@ -555,24 +555,33 @@ async function buildWeighInputs() {
   const week = parseInt(document.getElementById('weigh-week').value)||1;
   const el = document.getElementById('weigh-inputs');
   
-  // Load existing weigh-ins for this week
+  // Load existing weigh-ins for this week and previous week
   const weekWeighIns = {};
+  const prevWeekWeighIns = {};
   for (const p of participants) {
     const safeName = p.name.replace(/[^a-zA-Z0-9]/g, '_');
     const wi = await fbGet(`weighins/${safeName}_${week}`);
     if (wi) weekWeighIns[p.name] = wi.weight;
+    if (week > 1) {
+      const prevWi = await fbGet(`weighins/${safeName}_${week-1}`);
+      if (prevWi) prevWeekWeighIns[p.name] = prevWi.weight;
+    }
   }
   
   el.innerHTML = participants.map(p => {
     const val = weekWeighIns[p.name] || '';
     let badge = '';
-    if (val && p.startWeight > 0) {
-      const pct = (p.startWeight - val) / p.startWeight * 100;
-      if (pct>=2) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +8pts</span>`;
-      else if (pct>=1) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +4pts</span>`;
-      else if (pct<=-2) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -8pts</span>`;
-      else if (pct<=-1) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -4pts</span>`;
-      else badge=`<span class="badge" style="background:var(--ice);color:var(--text-secondary);">${pct.toFixed(1)}% 0pts</span>`;
+    if (val) {
+      // Use previous week's weight as baseline, or starting weight for week 1
+      const prevWeight = week > 1 && prevWeekWeighIns[p.name] ? prevWeekWeighIns[p.name] : p.startWeight;
+      if (prevWeight > 0) {
+        const pct = (prevWeight - val) / prevWeight * 100;
+        if (pct>=2) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +8pts</span>`;
+        else if (pct>=1) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +4pts</span>`;
+        else if (pct<=-2) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -8pts</span>`;
+        else if (pct<=-1) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -4pts</span>`;
+        else badge=`<span class="badge" style="background:var(--ice);color:var(--text-secondary);">${pct.toFixed(1)}% 0pts</span>`;
+      }
     }
     return `<div class="weigh-person">
       <div class="weigh-name">${p.name}${badge?'<br>'+badge:''}</div>
@@ -630,11 +639,16 @@ async function loadAndRenderBoard() {
     
     let weightBonus=0, pctLost=0;
     if (p.startWeight>0) {
-      const pWeighIns = weighIns.filter(w=>w.name===p.name);
+      const pWeighIns = weighIns.filter(w=>w.name===p.name).sort((a,b)=>a.week-b.week);
+      // Week-over-week calculation: each week compares to previous week's weight
+      let prevWeight = p.startWeight;
       pWeighIns.forEach(w => {
-        const pct = (p.startWeight-w.weight)/p.startWeight*100;
-        if(pct>=2)weightBonus+=8; else if(pct>=1)weightBonus+=4;
-        else if(pct<=-2)weightBonus-=8; else if(pct<=-1)weightBonus-=4;
+        const pct = (prevWeight - w.weight) / prevWeight * 100;
+        if(pct>=2) weightBonus+=8;
+        else if(pct>=1) weightBonus+=4;
+        else if(pct<=-2) weightBonus-=8;
+        else if(pct<=-1) weightBonus-=4;
+        prevWeight = w.weight; // this week's weight becomes next week's baseline
       });
       const latest = [...pWeighIns].sort((a,b)=>b.week-a.week)[0];
       if (latest) pctLost=(p.startWeight-latest.weight)/p.startWeight*100;
@@ -644,10 +658,14 @@ async function loadAndRenderBoard() {
   
   if (!data.length) { el.innerHTML='<div class="empty" style="color:var(--mist);">Add participants in Setup.</div>'; return; }
   
+  // Store data globally for detail view
+  window._boardData = data;
+  
   el.innerHTML = data.map((d,i) => {
     const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
-    return `<div class="lb-row" onclick="showDetail('${d.name}',${JSON.stringify(data).replace(/'/g,"&#39;")})">
+    const safeName = d.name.replace(/'/g,"\\'");
+    return `<div class="lb-row" onclick="showDetail('${safeName}')">
       <div class="rank-num ${rc}">${medal}</div>
       <div class="lb-name">${d.name}</div>
       <div style="text-align:right;"><div class="lb-pts">${d.total}</div><div class="lb-pts-label">pts</div></div>
@@ -655,8 +673,8 @@ async function loadAndRenderBoard() {
   }).join('');
 }
 
-function showDetail(name, dataJson) {
-  const data = typeof dataJson === 'string' ? JSON.parse(dataJson) : dataJson;
+function showDetail(name) {
+  const data = window._boardData || [];
   const d = data.find(x=>x.name===name); if(!d) return;
   const rank = data.indexOf(d)+1;
   const pc=d.pctLost>0?'#2ECC71':d.pctLost<0?'#E74C3C':'#8EAFC2';
