@@ -8,135 +8,122 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --fire:#FF4D1C;--fire-dark:#C93A10;--gold:#F5A623;
-    --navy:#0D1B2A;--navy-mid:#1A2E42;--navy-light:#243E58;
-    --mist:#8EAFC2;--fog:#C8DCE8;--ice:#EEF5FA;--white:#FFFFFF;
-    --green:#2ECC71;--green-light:#D5F5E3;--red:#E74C3C;--red-light:#FADBD8;
-    --purple:#8B5CF6;--amber:#F59E0B;
-    --text-primary:#0D1B2A;--text-secondary:#3D5A73;--text-muted:#8EAFC2;
-    --border:rgba(13,27,42,0.1);--shadow:0 2px 12px rgba(13,27,42,0.08);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
-  .app-header{background:var(--navy);position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,0.08);}
-  .header-top{background:linear-gradient(135deg,var(--fire-dark) 0%,var(--fire) 50%,var(--gold) 100%);padding:16px 20px 12px;text-align:center;}
-  .header-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--white);line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.3);}
-  .header-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:2px;letter-spacing:0.05em;font-weight:500;}
-  .nav{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--navy-mid);}
-  .nav::-webkit-scrollbar{display:none;}
-  .nav-btn{flex:1;min-width:60px;padding:10px 4px 8px;border:none;background:none;color:var(--mist);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.04em;cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
-  .nav-btn.active{color:var(--fire);border-bottom-color:var(--fire);}
-  .nav-btn:hover:not(.active){color:var(--fog);}
-  .nav-icon{font-size:14px;display:block;margin-bottom:2px;}
-  .content{max-width:600px;margin:0 auto;padding:16px 14px 80px;}
-  .panel{display:none;}.panel.active{display:block;}
-  .card{background:var(--white);border-radius:16px;padding:16px;margin-bottom:12px;color:var(--text-primary);box-shadow:var(--shadow);}
-  .card-dark{background:var(--navy-mid);border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.07);}
-  .card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text-primary);margin-bottom:12px;}
-  .card-title-light{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);margin-bottom:12px;}
-  label{display:block;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px;}
-  input[type=text],input[type=number],input[type=date]{width:100%;padding:9px 11px;border:1.5px solid var(--fog);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-primary);background:var(--white);outline:none;transition:border-color 0.15s;}
-  select{width:100%;padding:9px 11px;border:1.5px solid var(--fog);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-primary);background:var(--white);outline:none;transition:border-color 0.15s;cursor:pointer;}
-  select option{font-size:16px;padding:8px;color:var(--text-primary);background:var(--white);}
-  input:focus,select:focus{border-color:var(--fire);}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-  .form-group{margin-bottom:10px;}
-  .radio-group{display:flex;gap:5px;}
-  .radio-opt{flex:1;padding:8px 4px;text-align:center;border:1.5px solid var(--fog);border-radius:10px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-secondary);background:var(--white);transition:all 0.15s;user-select:none;line-height:1.3;}
-  .radio-opt.active{border-color:var(--fire);background:#FFF0EC;color:var(--fire-dark);}
-  .btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,var(--fire-dark),var(--fire));color:var(--white);border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1.5px;cursor:pointer;margin-top:6px;box-shadow:0 4px 16px rgba(255,77,28,0.3);transition:all 0.15s;}
-  .btn-primary:active{transform:scale(0.98);}
-  .btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-  .btn-add{padding:9px 16px;background:var(--navy);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;}
-  .success-msg{background:var(--green-light);color:#1A6B3C;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:500;margin-top:8px;display:none;text-align:center;}
-  .error-msg{background:var(--red-light);color:#922B21;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:500;margin-top:8px;display:none;text-align:center;}
-  .points-preview{background:var(--navy);border-radius:12px;padding:12px;margin:10px 0;}
-  .preview-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--mist);margin-bottom:6px;}
-  .preview-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0;color:var(--fog);}
-  .preview-total{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.1);margin-top:5px;padding-top:7px;font-size:14px;font-weight:600;color:var(--white);}
-  .preview-pts{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:1px;}
-  .lb-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.07);cursor:pointer;}
-  .lb-row:last-child{border-bottom:none;}
-  .rank-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;flex-shrink:0;}
-  .rank-1{background:linear-gradient(135deg,#F5A623,#F5D020);color:#5A3A00;}
-  .rank-2{background:linear-gradient(135deg,#BDC3C7,#95A5A6);color:#2C3E50;}
-  .rank-3{background:linear-gradient(135deg,#CD7F32,#A0522D);color:#FFF;}
-  .rank-other{background:rgba(255,255,255,0.08);color:var(--mist);font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;}
-  .lb-name{flex:1;font-weight:600;font-size:14px;}
-  .lb-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--fire);letter-spacing:0.5px;}
-  .lb-pts-label{font-size:10px;color:var(--mist);}
-  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-  .stat-card{background:var(--navy-light);border-radius:12px;padding:12px 8px;text-align:center;}
-  .stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);letter-spacing:1px;}
-  .stat-lbl{font-size:10px;color:var(--mist);margin-top:1px;font-weight:500;}
-  .detail-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
-  .detail-row:last-child{border-bottom:none;}
-  .detail-key{color:var(--text-secondary);}
-  .detail-val{font-weight:600;}
-  .entry-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
-  .entry-row:last-child{border-bottom:none;}
-  .entry-name{font-weight:600;}
-  .entry-date{color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;}
-  .entry-pts{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--fire);min-width:36px;text-align:right;}
-  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;}
-  .badge-green{background:var(--green-light);color:#1A6B3C;}
-  .badge-red{background:var(--red-light);color:#922B21;}
-  .rules-header{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--mist);text-transform:uppercase;padding:10px 0 5px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:6px;}
-  .rule-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:var(--fog);}
-  .rule-row:last-child{border-bottom:none;}
-  .rule-row-sub{font-size:10px;color:var(--mist);margin-top:1px;}
-  .pts-pill{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;margin-left:6px;}
-  .pill-blue{background:rgba(59,130,246,0.18);color:#93C5FD;}
-  .pill-green{background:rgba(46,204,113,0.15);color:#6EE7B7;}
-  .pill-purple{background:rgba(139,92,246,0.18);color:#C4B5FD;}
-  .pill-amber{background:rgba(245,158,11,0.18);color:#FCD34D;}
-  .pill-red{background:rgba(231,76,60,0.18);color:#FCA5A5;}
-  .pill-gray{background:rgba(255,255,255,0.07);color:var(--mist);}
-  .prize-row{display:flex;gap:8px;margin-top:4px;}
-  .prize-item{flex:1;background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,0.08);}
-  .prize-icon{font-size:22px;margin-bottom:4px;}
-  .prize-amount{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--gold);}
-  .prize-desc{font-size:10px;color:var(--mist);margin-top:2px;}
-  .integrity-note{background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:10px 12px;font-size:12px;color:#93C5FD;line-height:1.6;margin-top:6px;}
-  .how-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:var(--fog);align-items:flex-start;}
-  .how-row:last-child{border-bottom:none;}
-  .how-num{width:22px;height:22px;border-radius:50%;background:var(--fire);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-  .weigh-person{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
-  .weigh-person:last-child{border-bottom:none;}
-  .weigh-name{flex:1;font-weight:600;font-size:14px;}
-  .weigh-input{width:85px;}
-  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--ice);border:1px solid var(--fog);border-radius:99px;padding:4px 10px 4px 8px;font-size:12px;font-weight:500;color:var(--text-primary);}
-  .chip-remove{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px;line-height:1;padding:0;}
-  .empty{text-align:center;padding:20px;color:var(--text-muted);font-size:13px;}
-  .hero-banner{background:linear-gradient(135deg,var(--fire-dark) 0%,var(--fire) 60%,var(--gold) 100%);border-radius:14px;padding:18px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden;}
-  .hero-banner::before{content:'🏋️';position:absolute;font-size:70px;opacity:0.08;right:-8px;top:-8px;}
-  .hero-name{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:rgba(255,255,255,0.8);}
-  .hero-pts{font-family:'Bebas Neue',sans-serif;font-size:50px;color:var(--white);line-height:1;letter-spacing:2px;}
-  .hero-label{font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;}
-  .week-selector{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-  .week-selector label{margin:0;white-space:nowrap;}
-  .week-selector select{flex:1;}
-  .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;}
-  .loading-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);margin-bottom:6px;}
-  .loading-sub{font-size:13px;color:var(--mist);}
-  .spinner{width:34px;height:34px;border:3px solid rgba(255,77,28,0.2);border-top-color:var(--fire);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:14px;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .sync-bar{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.2);border-radius:10px;padding:7px 11px;font-size:11px;color:#6EE7B7;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
-  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-  .setup-banner{background:linear-gradient(135deg,rgba(255,77,28,0.15),rgba(245,166,35,0.15));border:1px solid rgba(255,77,28,0.3);border-radius:12px;padding:14px;margin-bottom:12px;font-size:13px;color:var(--fog);line-height:1.6;}
-  .setup-banner strong{color:var(--gold);display:block;margin-bottom:4px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;}
-  .divider{border:none;border-top:1px solid rgba(255,255,255,0.07);margin:8px 0;}
+:root {
+  --fire:#FF4D1C;--fire-dark:#C93A10;--gold:#F5A623;
+  --navy:#0D1B2A;--navy-mid:#1A2E42;--navy-light:#243E58;
+  --mist:#8EAFC2;--fog:#C8DCE8;--ice:#EEF5FA;--white:#FFFFFF;
+  --green:#2ECC71;--green-light:#D5F5E3;--red:#E74C3C;--red-light:#FADBD8;
+  --purple:#8B5CF6;--amber:#F59E0B;
+  --text-primary:#0D1B2A;--text-secondary:#3D5A73;--text-muted:#8EAFC2;
+  --border:rgba(13,27,42,0.1);--shadow:0 2px 12px rgba(13,27,42,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+.app-header{background:var(--navy);position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,0.08);}
+.header-top{background:linear-gradient(135deg,var(--fire-dark) 0%,var(--fire) 50%,var(--gold) 100%);padding:16px 20px 12px;text-align:center;}
+.header-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--white);line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:2px;letter-spacing:0.05em;font-weight:500;}
+.nav{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--navy-mid);}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{flex:1;min-width:60px;padding:10px 4px 8px;border:none;background:none;color:var(--mist);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.04em;cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
+.nav-btn.active{color:var(--fire);border-bottom-color:var(--fire);}
+.nav-btn:hover:not(.active){color:var(--fog);}
+.nav-icon{font-size:14px;display:block;margin-bottom:2px;}
+.content{max-width:600px;margin:0 auto;padding:16px 14px 80px;}
+.panel{display:none;}.panel.active{display:block;}
+.card{background:var(--white);border-radius:16px;padding:16px;margin-bottom:12px;color:var(--text-primary);box-shadow:var(--shadow);}
+.card-dark{background:var(--navy-mid);border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.07);}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text-primary);margin-bottom:12px;}
+.card-title-light{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);margin-bottom:12px;}
+label{display:block;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px;}
+input[type=text],input[type=number],input[type=date],select{width:100%;padding:9px 11px;border:1.5px solid var(--fog);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-primary);background:var(--white);outline:none;transition:border-color 0.15s;cursor:pointer;}
+input:focus,select:focus{border-color:var(--fire);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-group{margin-bottom:10px;}
+.radio-group{display:flex;gap:5px;}
+.radio-opt{flex:1;padding:8px 4px;text-align:center;border:1.5px solid var(--fog);border-radius:10px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-secondary);background:var(--white);transition:all 0.15s;user-select:none;line-height:1.3;}
+.radio-opt.active{border-color:var(--fire);background:#FFF0EC;color:var(--fire-dark);}
+.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,var(--fire-dark),var(--fire));color:var(--white);border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1.5px;cursor:pointer;margin-top:6px;box-shadow:0 4px 16px rgba(255,77,28,0.3);transition:all 0.15s;}
+.btn-primary:active{transform:scale(0.98);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-add{padding:9px 16px;background:var(--navy);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;}
+.success-msg{background:var(--green-light);color:#1A6B3C;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:500;margin-top:8px;display:none;text-align:center;}
+.error-msg{background:var(--red-light);color:#922B21;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:500;margin-top:8px;display:none;text-align:center;}
+.points-preview{background:var(--navy);border-radius:12px;padding:12px;margin:10px 0;}
+.preview-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--mist);margin-bottom:6px;}
+.preview-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0;color:var(--fog);}
+.preview-total{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.1);margin-top:5px;padding-top:7px;font-size:14px;font-weight:600;color:var(--white);}
+.preview-pts{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:1px;}
+.lb-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.07);cursor:pointer;}
+.lb-row:last-child{border-bottom:none;}
+.rank-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;flex-shrink:0;}
+.rank-1{background:linear-gradient(135deg,#F5A623,#F5D020);color:#5A3A00;}
+.rank-2{background:linear-gradient(135deg,#BDC3C7,#95A5A6);color:#2C3E50;}
+.rank-3{background:linear-gradient(135deg,#CD7F32,#A0522D);color:#FFF;}
+.rank-other{background:rgba(255,255,255,0.08);color:var(--mist);font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;}
+.lb-name{flex:1;font-weight:600;font-size:14px;}
+.lb-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--fire);letter-spacing:0.5px;}
+.lb-pts-label{font-size:10px;color:var(--mist);}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.stat-card{background:var(--navy-light);border-radius:12px;padding:12px 8px;text-align:center;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);letter-spacing:1px;}
+.stat-lbl{font-size:10px;color:var(--mist);margin-top:1px;font-weight:500;}
+.detail-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.detail-row:last-child{border-bottom:none;}
+.detail-key{color:var(--text-secondary);}
+.detail-val{font-weight:600;}
+.entry-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.entry-row:last-child{border-bottom:none;}
+.entry-name{font-weight:600;}
+.entry-date{color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;}
+.entry-pts{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--fire);min-width:36px;text-align:right;}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.badge-green{background:var(--green-light);color:#1A6B3C;}
+.badge-red{background:var(--red-light);color:#922B21;}
+.rules-header{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--mist);text-transform:uppercase;padding:10px 0 5px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:6px;}
+.rule-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:var(--fog);}
+.rule-row:last-child{border-bottom:none;}
+.rule-row-sub{font-size:10px;color:var(--mist);margin-top:1px;}
+.pts-pill{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;margin-left:6px;}
+.pill-blue{background:rgba(59,130,246,0.18);color:#93C5FD;}
+.pill-green{background:rgba(46,204,113,0.15);color:#6EE7B7;}
+.pill-purple{background:rgba(139,92,246,0.18);color:#C4B5FD;}
+.pill-amber{background:rgba(245,158,11,0.18);color:#FCD34D;}
+.pill-red{background:rgba(231,76,60,0.18);color:#FCA5A5;}
+.pill-gray{background:rgba(255,255,255,0.07);color:var(--mist);}
+.prize-row{display:flex;gap:8px;margin-top:4px;}
+.prize-item{flex:1;background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,0.08);}
+.prize-icon{font-size:22px;margin-bottom:4px;}
+.prize-amount{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--gold);}
+.prize-desc{font-size:10px;color:var(--mist);margin-top:2px;}
+.integrity-note{background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:10px 12px;font-size:12px;color:#93C5FD;line-height:1.6;margin-top:6px;}
+.how-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:var(--fog);align-items:flex-start;}
+.how-row:last-child{border-bottom:none;}
+.how-num{width:22px;height:22px;border-radius:50%;background:var(--fire);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.weigh-person{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.weigh-person:last-child{border-bottom:none;}
+.weigh-name{flex:1;font-weight:600;font-size:14px;}
+.weigh-input{width:85px;}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--ice);border:1px solid var(--fog);border-radius:99px;padding:4px 10px 4px 8px;font-size:12px;font-weight:500;color:var(--text-primary);}
+.chip-remove{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px;line-height:1;padding:0;}
+.empty{text-align:center;padding:20px;color:var(--text-muted);font-size:13px;}
+.hero-banner{background:linear-gradient(135deg,var(--fire-dark) 0%,var(--fire) 60%,var(--gold) 100%);border-radius:14px;padding:18px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden;}
+.hero-banner::before{content:'🏋️';position:absolute;font-size:70px;opacity:0.08;right:-8px;top:-8px;}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:rgba(255,255,255,0.8);}
+.hero-pts{font-family:'Bebas Neue',sans-serif;font-size:50px;color:var(--white);line-height:1;letter-spacing:2px;}
+.hero-label{font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;}
+.week-selector{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.week-selector label{margin:0;white-space:nowrap;}
+.week-selector select{flex:1;}
+.sync-bar{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.2);border-radius:10px;padding:7px 11px;font-size:11px;color:#6EE7B7;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.name-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.name-btn{padding:10px 16px;border:2px solid var(--fog);border-radius:10px;background:var(--white);font-size:14px;font-weight:600;color:var(--text-primary);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.name-btn.selected{border-color:var(--fire);background:#FFF0EC;color:var(--fire-dark);}
 </style>
 </head>
 <body>
-
-<div id="loading-overlay" class="loading-overlay">
-  <div class="spinner"></div>
-  <div class="loading-title">Family Fitness Throwdown</div>
-  <div class="loading-sub" id="loading-msg">Loading contest data...</div>
-</div>
 
 <div class="app-header">
   <div class="header-top">
@@ -148,7 +135,7 @@
     <button class="nav-btn" onclick="showTab('weigh',this)"><span class="nav-icon">⚖️</span>Weigh-In</button>
     <button class="nav-btn" onclick="showTab('board',this)"><span class="nav-icon">🏆</span>Standings</button>
     <button class="nav-btn" onclick="showTab('rules',this)"><span class="nav-icon">📋</span>Rules</button>
-    <button class="nav-btn" onclick="checkPin(this)"><span class="nav-icon">⚙️</span>Setup</button>
+    <button class="nav-btn" onclick="showTab('setup',this)"><span class="nav-icon">⚙️</span>Setup</button>
   </nav>
 </div>
 
@@ -156,12 +143,19 @@
 
   <!-- LOG TAB -->
   <div id="tab-log" class="panel active">
-    <div class="sync-bar"><div class="sync-dot"></div><span id="sync-status">Live — entries sync across all devices</span></div>
+    <div class="sync-bar"><div class="sync-dot"></div><span>Live — entries sync across all devices</span></div>
     <div class="card">
       <div class="card-title">Log today's activity</div>
-      <div class="form-group"><label>Participant</label><div id="name-picker" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;"></div><input type="hidden" id="log-name" value=""></div>
-      <div class="form-group"><label>Date</label><input type="date" id="log-date"></div>
-      <div class="form-group" style="margin-top:10px;">
+      <div class="form-group">
+        <label>Who are you?</label>
+        <div class="name-picker" id="name-picker"></div>
+        <input type="hidden" id="log-name">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="log-date">
+      </div>
+      <div class="form-group">
         <label>Steps today</label>
         <input type="number" id="log-steps" placeholder="e.g. 12,500" min="0" oninput="updatePreview()">
       </div>
@@ -176,8 +170,8 @@
       <div class="form-group">
         <label>Fast food today?</label>
         <div class="radio-group">
-          <div class="radio-opt" id="ff-no" onclick="setR('fastfood','no')">None ✓<br><span style="font-size:10px;opacity:0.7">+1 pt</span></div>
           <div class="radio-opt active" id="ff-yes" onclick="setR('fastfood','yes')">Had some<br><span style="font-size:10px;opacity:0.7">0 pts</span></div>
+          <div class="radio-opt" id="ff-no" onclick="setR('fastfood','no')">None ✓<br><span style="font-size:10px;opacity:0.7">+1 pt</span></div>
         </div>
       </div>
       <div class="form-group">
@@ -193,18 +187,18 @@
       <div class="points-preview">
         <div class="preview-label">Points preview</div>
         <div class="preview-row"><span>Steps</span><span id="prev-steps">0</span></div>
-        <div class="preview-row"><span>Workout</span><span id="prev-workout">2</span></div>
-        <div class="preview-row"><span>No fast food</span><span id="prev-ff">1</span></div>
-        <div class="preview-row"><span>Fasting window</span><span id="prev-fast">1</span></div>
-        <div class="preview-total"><span>Today's total</span><span class="preview-pts" id="prev-total">4</span></div>
+        <div class="preview-row"><span>Workout</span><span id="prev-workout">0</span></div>
+        <div class="preview-row"><span>No fast food</span><span id="prev-ff">0</span></div>
+        <div class="preview-row"><span>Fasting window</span><span id="prev-fast">0</span></div>
+        <div class="preview-total"><span>Today's total</span><span class="preview-pts" id="prev-total">0</span></div>
       </div>
       <button class="btn-primary" id="log-btn" onclick="submitLog()">Save Entry</button>
-      <div class="success-msg" id="log-success">✓ Entry saved and synced!</div>
-      <div class="error-msg" id="log-error" id="log-err"></div>
+      <div class="success-msg" id="log-success">✓ Entry saved!</div>
+      <div class="error-msg" id="log-error"></div>
     </div>
     <div class="card">
       <div class="card-title">Recent entries</div>
-      <div id="recent-entries"><div class="empty">No entries yet — start logging!</div></div>
+      <div id="recent-entries"><div class="empty">No entries yet</div></div>
     </div>
   </div>
 
@@ -215,7 +209,7 @@
       <div class="week-selector"><label>Week</label><select id="weigh-week" onchange="buildWeighInputs()"></select></div>
       <div id="weigh-inputs"></div>
       <button class="btn-primary" id="weigh-btn" onclick="submitWeighIn()" style="margin-top:12px;">Save Weigh-In</button>
-      <div class="success-msg" id="weigh-success">✓ Weigh-in saved and synced!</div>
+      <div class="success-msg" id="weigh-success">✓ Weigh-in saved!</div>
       <div class="error-msg" id="weigh-error"></div>
     </div>
     <div class="card">
@@ -250,7 +244,7 @@
       <div style="text-align:center;margin-bottom:14px;">
         <div style="font-size:32px;margin-bottom:5px;">🔥</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--white);">The Family Fitness Throwdown 2026</div>
-        <div style="font-size:12px;color:var(--mist);margin-top:3px;">8-week challenge · $50 entry · Up to 10 participants</div>
+        <div style="font-size:12px;color:var(--mist);margin-top:3px;">8-week challenge · $50 entry · 16 participants</div>
       </div>
       <div class="rules-header">Daily step scoring</div>
       <div class="rule-row"><span>Under 8,000 steps</span><span class="pts-pill pill-gray">0 pts</span></div>
@@ -259,10 +253,10 @@
       <div class="rule-row"><span>12,000 – 13,999</span><span class="pts-pill pill-blue">3 pts</span></div>
       <div class="rule-row"><span>14,000 – 15,999</span><span class="pts-pill pill-blue">4 pts</span></div>
       <div class="rule-row"><span>16,000 – 17,999</span><span class="pts-pill pill-blue">6 pts</span></div>
-      <div class="rule-row"><span>18,000 – 19,999 steps</span><span class="pts-pill pill-blue">7 pts</span></div>
+      <div class="rule-row"><span>18,000 – 19,999</span><span class="pts-pill pill-blue">7 pts</span></div>
       <div class="rule-row"><span style="font-weight:600;color:var(--white);">20,000+ steps</span><span class="pts-pill pill-blue">8 pts</span></div>
       <div class="rules-header" style="margin-top:12px;">Daily bonus activities</div>
-      <div class="rule-row"><div><div>Workout 30–59 min</div><div class="rule-row-sub">Any intentional exercise</div></div><span class="pts-pill pill-green">+2 pts</span></div>
+      <div class="rule-row"><div><div>Workout 30–59 min</div><div class="rule-row-sub">Dedicated exercise session — not casual walking</div></div><span class="pts-pill pill-green">+2 pts</span></div>
       <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Workout 60+ min</div><div class="rule-row-sub">Higher tier only — not stackable</div></div><span class="pts-pill pill-green">+4 pts</span></div>
       <div class="rule-row"><div>No fast food all day</div><span class="pts-pill pill-green">+1 pt</span></div>
       <div class="rules-header" style="margin-top:12px;">Daily intermittent fasting</div>
@@ -272,7 +266,7 @@
       <div class="rule-row"><div><div>19 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 3pm</div></div><span class="pts-pill pill-purple">+3 pts</span></div>
       <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">21+ hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 5pm</div></div><span class="pts-pill pill-purple">+4 pts</span></div>
       <div class="rules-header" style="margin-top:12px;">Weekly weigh-in — bonus & penalty</div>
-      <div class="rule-row"><div><div>Lost 1% of starting weight</div><div class="rule-row-sub">Measured each Sunday</div></div><span class="pts-pill pill-amber">+4 pts</span></div>
+      <div class="rule-row"><div><div>Lost 1% of starting weight</div></div><span class="pts-pill pill-amber">+4 pts</span></div>
       <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Lost 2%+ of starting weight</div></div><span class="pts-pill pill-amber">+8 pts</span></div>
       <div class="rule-row"><span>Under 1% change either way</span><span class="pts-pill pill-gray">0 pts</span></div>
       <div class="rule-row"><div>Gained 1% of starting weight</div><span class="pts-pill pill-red">-4 pts</span></div>
@@ -284,12 +278,12 @@
         <div class="prize-item"><div class="prize-icon">🥉</div><div class="prize-amount">$100</div><div class="prize-desc">Gift card — 3rd place</div></div>
       </div>
       <div class="rules-header" style="margin-top:12px;">How it works</div>
-      <div class="how-row"><div class="how-num">1</div><div>Enter participant names and starting weights in Setup before day one.</div></div>
+      <div class="how-row"><div class="how-num">1</div><div>Starting weights are entered by the commissioner before day one.</div></div>
       <div class="how-row"><div class="how-num">2</div><div>Log steps, workout, fast food, and fasting window each day.</div></div>
       <div class="how-row"><div class="how-num">3</div><div>Weigh in every Sunday — earn bonus or take the penalty.</div></div>
       <div class="how-row"><div class="how-num">4</div><div>Check Standings for the live leaderboard anytime.</div></div>
-      <div class="how-row"><div class="how-num">5</div><div>Most points after 8 weeks wins $500 cash. Second place gets $200 cash. Third place gets a $100 gift card.</div></div>
-      <div class="integrity-note" style="margin-top:12px;">🛡️ Use Apple Health, Fitbit, Garmin, or Samsung Health for step verification. Workouts, fast food, and fasting are honor system. Play fair — this is family!</div>
+      <div class="how-row"><div class="how-num">5</div><div>Most points after 8 weeks wins $500 cash. 2nd gets $200. 3rd gets a $100 gift card.</div></div>
+      <div class="integrity-note" style="margin-top:12px;">🛡️ Steps verified via Apple Health, Fitbit, Garmin, or Samsung Health. Workouts must be dedicated exercise sessions — not casual daily walking. Fast food and fasting are honor system. Play fair — this is family!</div>
     </div>
   </div>
 
@@ -298,7 +292,7 @@
     <div class="card-dark" style="margin-bottom:12px;">
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="width:10px;height:10px;border-radius:50%;background:#2ECC71;flex-shrink:0;"></div>
-        <div style="font-size:13px;color:var(--fog);">Connected to Firebase — data syncs automatically across all devices</div>
+        <div style="font-size:13px;color:var(--fog);">Connected to Firebase — data syncs automatically</div>
       </div>
     </div>
     <div class="card">
@@ -324,128 +318,134 @@
       <div id="chip-list" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;"></div>
       <div id="weight-form"></div>
       <button class="btn-primary" onclick="saveParticipants()">Save Participants & Weights</button>
-      <div class="success-msg" id="part-success">✓ Saved and synced!</div>
+      <div class="success-msg" id="part-success">✓ Saved!</div>
       <div class="error-msg" id="part-error"></div>
     </div>
-    <div class="card" style="border:2px solid #E74C3C;">
-      <div class="card-title" style="color:#E74C3C;">⚠ Danger Zone</div>
-      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6;">Deletes ALL logged entries and weigh-ins. Use this to clear test data before the official start. Cannot be undone.</div>
-      <button class="btn-primary" onclick="resetContest()" style="background:linear-gradient(135deg,#922B21,#E74C3C);box-shadow:0 4px 16px rgba(231,76,60,0.3);">Reset All Contest Data</button>
-      <div class="success-msg" id="reset-success">✓ All data cleared. Fresh start!</div>
+    <div class="card" style="border:2px solid var(--red);">
+      <div class="card-title" style="color:var(--red);">⚠ Danger Zone</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6;">Deletes ALL logged entries and weigh-ins. Cannot be undone.</div>
+      <button class="btn-primary" onclick="resetContest()" style="background:linear-gradient(135deg,#922B21,#E74C3C);">Reset All Contest Data</button>
+      <div class="success-msg" id="reset-success">✓ All data cleared!</div>
     </div>
   </div>
 
 </div>
 
 <script>
-// Firebase REST API - no module imports needed
-const FB_PROJECT = 'family-fitness-throwdown';
-const FB_API_KEY = 'AIzaSyD1GAOXZG7jslv0lmIGw0xB1UJGVYmvxDo';
-const FB_URL = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents/contest/data`;
-let S = { settings:{ startDate:'',weeks:8,fee:50,winner:500 }, participants:[], logs:[], weighIns:[] };
-let radios = { workout:'none', fastfood:'yes', fasting:'none' };
+// ── FIREBASE REST API ──────────────────────────────────────────
+// Uses Firestore REST API - no module imports, no scope issues
+const FB_KEY = 'AIzaSyD1GAOXZG7jslv0lmIGw0xB1UJGVYmvxDo';
+const FB_BASE = 'https://firestore.googleapis.com/v1/projects/family-fitness-throwdown/databases/(default)/documents';
 
-// ── FIREBASE STORAGE ───────────────────────────────────────────
+// Each participant's logs stored as separate documents to prevent race conditions
+// contest/settings - contest settings and participants
+// logs/{name}_{date} - individual daily log entries  
+// weighins/{name}_{week} - individual weigh-in entries
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const CONTEST_DOC = doc(db, 'contest', 'data');
-
-async function fetchData() {
+async function fbGet(path) {
   try {
-    const r = await fetch(`${FB_URL}?key=${FB_API_KEY}`);
-    if (!r.ok) return false;
+    const r = await fetch(`${FB_BASE}/${path}?key=${FB_KEY}`);
+    if (r.status === 404) return null;
+    if (!r.ok) return null;
     const d = await r.json();
-    if (d.fields) {
-      S = firestoreToJS(d.fields);
-    }
-    return true;
-  } catch(e) { console.error('Fetch error:', e); return false; }
+    return fsToJS(d.fields || {});
+  } catch(e) { return null; }
 }
 
-function firestoreToJS(fields) {
+async function fbSet(path, data) {
+  try {
+    const r = await fetch(`${FB_BASE}/${path}?key=${FB_KEY}`, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({fields: jsToFS(data)})
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function fbList(collection) {
+  try {
+    const r = await fetch(`${FB_BASE}/${collection}?key=${FB_KEY}`);
+    if (!r.ok) return [];
+    const d = await r.json();
+    return (d.documents || []).map(doc => ({
+      id: doc.name.split('/').pop(),
+      ...fsToJS(doc.fields || {})
+    }));
+  } catch(e) { return []; }
+}
+
+async function fbDelete(path) {
+  try {
+    await fetch(`${FB_BASE}/${path}?key=${FB_KEY}`, {method:'DELETE'});
+    return true;
+  } catch(e) { return false; }
+}
+
+function fsToJS(fields) {
   const obj = {};
   for (const [k, v] of Object.entries(fields)) {
     if (v.stringValue !== undefined) obj[k] = v.stringValue;
     else if (v.integerValue !== undefined) obj[k] = parseInt(v.integerValue);
-    else if (v.doubleValue !== undefined) obj[k] = v.doubleValue;
+    else if (v.doubleValue !== undefined) obj[k] = parseFloat(v.doubleValue);
     else if (v.booleanValue !== undefined) obj[k] = v.booleanValue;
-    else if (v.arrayValue !== undefined) obj[k] = (v.arrayValue.values || []).map(item => {
-      if (item.mapValue) return firestoreToJS(item.mapValue.fields || {});
-      if (item.stringValue !== undefined) return item.stringValue;
-      if (item.integerValue !== undefined) return parseInt(item.integerValue);
-      if (item.doubleValue !== undefined) return item.doubleValue;
-      if (item.booleanValue !== undefined) return item.booleanValue;
+    else if (v.nullValue !== undefined) obj[k] = null;
+    else if (v.arrayValue) obj[k] = (v.arrayValue.values||[]).map(i => {
+      if (i.mapValue) return fsToJS(i.mapValue.fields||{});
+      if (i.stringValue !== undefined) return i.stringValue;
+      if (i.integerValue !== undefined) return parseInt(i.integerValue);
+      if (i.doubleValue !== undefined) return parseFloat(i.doubleValue);
+      if (i.booleanValue !== undefined) return i.booleanValue;
       return null;
     });
-    else if (v.mapValue !== undefined) obj[k] = firestoreToJS(v.mapValue.fields || {});
-    else if (v.nullValue !== undefined) obj[k] = null;
+    else if (v.mapValue) obj[k] = fsToJS(v.mapValue.fields||{});
   }
   return obj;
 }
 
-function jsToFirestore(obj) {
-  const fields = {};
+function jsToFS(obj) {
+  const f = {};
   for (const [k, v] of Object.entries(obj)) {
-    if (v === null || v === undefined) fields[k] = { nullValue: null };
-    else if (typeof v === 'string') fields[k] = { stringValue: v };
-    else if (typeof v === 'boolean') fields[k] = { booleanValue: v };
-    else if (typeof v === 'number') {
-      if (Number.isInteger(v)) fields[k] = { integerValue: v.toString() };
-      else fields[k] = { doubleValue: v };
-    }
-    else if (Array.isArray(v)) fields[k] = { arrayValue: { values: v.map(item => {
-      if (item === null) return { nullValue: null };
-      if (typeof item === 'string') return { stringValue: item };
-      if (typeof item === 'boolean') return { booleanValue: item };
-      if (typeof item === 'number') return Number.isInteger(item) ? { integerValue: item.toString() } : { doubleValue: item };
-      if (typeof item === 'object') return { mapValue: { fields: jsToFirestore(item) } };
-      return { nullValue: null };
+    if (v === null || v === undefined) f[k] = {nullValue:null};
+    else if (typeof v === 'boolean') f[k] = {booleanValue:v};
+    else if (typeof v === 'string') f[k] = {stringValue:v};
+    else if (typeof v === 'number') f[k] = Number.isInteger(v) ? {integerValue:String(v)} : {doubleValue:v};
+    else if (Array.isArray(v)) f[k] = {arrayValue:{values:v.map(i => {
+      if (i === null) return {nullValue:null};
+      if (typeof i === 'boolean') return {booleanValue:i};
+      if (typeof i === 'string') return {stringValue:i};
+      if (typeof i === 'number') return Number.isInteger(i) ? {integerValue:String(i)} : {doubleValue:i};
+      if (typeof i === 'object') return {mapValue:{fields:jsToFS(i)}};
+      return {nullValue:null};
     })}};
-    else if (typeof v === 'object') fields[k] = { mapValue: { fields: jsToFirestore(v) } };
+    else if (typeof v === 'object') f[k] = {mapValue:{fields:jsToFS(v)}};
   }
-  return fields;
+  return f;
 }
 
-async function pushData() {
-  try {
-    const body = { fields: jsToFirestore(S) };
-    const r = await fetch(`${FB_URL}?key=${FB_API_KEY}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    return r.ok;
-  } catch(e) { console.error('Push error:', e); return false; }
-}
+// ── APP STATE ──────────────────────────────────────────────────
+let settings = { startDate:'', weeks:8, fee:50, winner:500 };
+let participants = [];
+let radios = { workout:'none', fastfood:'yes', fasting:'none' };
 
 // ── INIT ───────────────────────────────────────────────────────
 async function init() {
-  localStorage.clear();
-  document.getElementById('loading-msg').textContent = 'Syncing contest data...';
-  // Always hide overlay after 5 seconds max regardless of Firebase status
-  const hideOverlay = () => document.getElementById('loading-overlay').style.display = 'none';
-  const fallbackTimer = setTimeout(hideOverlay, 5000);
-  try {
-    await fetchData();
-  } catch(e) {
-    console.error('Init fetch error:', e);
-  }
-  clearTimeout(fallbackTimer);
-  hideOverlay();
-  const now = new Date(); const today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  const now = new Date();
+  const today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
   document.getElementById('log-date').value = today;
-  document.getElementById('header-sub').textContent = `${S.settings.weeks}-Week Challenge · $${S.settings.fee} Entry`;
-  renderNameSelect();
+  
+  // Load settings
+  const s = await fbGet('contest/settings');
+  if (s) {
+    if (s.settings) settings = s.settings;
+    if (s.participants) participants = s.participants;
+  }
+  
+  document.getElementById('header-sub').textContent = `${settings.weeks}-Week Challenge · $${settings.fee} Entry`;
+  renderNamePicker();
   renderRecentEntries();
   updatePreview();
-  setR('workout', radios.workout);
-  setR('fastfood', radios.fastfood);
-  setR('fasting', radios.fasting);
-
 }
-
-// Firebase handles connection automatically
 
 // ── TAB NAV ────────────────────────────────────────────────────
 function showTab(id, btn) {
@@ -453,42 +453,17 @@ function showTab(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   if (btn) btn.classList.add('active');
-  if (id === 'board') { fetchData().then(() => renderBoard()); startBoardRefresh(); } else { stopBoardRefresh(); }
+  if (id === 'board') loadAndRenderBoard();
   if (id === 'weigh') renderWeighTab();
   if (id === 'setup') renderSetupTab();
   if (id === 'log') renderRecentEntries();
 }
 
 // ── RADIO ──────────────────────────────────────────────────────
-
-
-async function resetContest() {
-  const confirm1 = prompt('Type RESET to confirm clearing all contest data:');
-  if (confirm1 !== 'RESET') { alert('Reset cancelled.'); return; }
-  S.logs = [];
-  S.weighIns = [];
-  const ok = await pushData();
-  if (ok) {
-    flash('reset-success');
-    renderRecentEntries();
-  } else {
-    alert('Reset failed — try again.');
-  }
-}
-
-function checkPin(btn) {
-  const pin = prompt('Enter commissioner PIN to access Setup:');
-  if (pin === '5150') {
-    showTab('setup', btn);
-  } else if (pin !== null) {
-    alert('Incorrect PIN. Setup is commissioner only.');
-  }
-}
-
 function setR(g, v) {
   radios[g] = v;
-  const m = { workout:['none','30','60'], fastfood:['no','yes'], fasting:['none','15','17','19','21'] };
-  const p = { workout:'wo', fastfood:'ff', fasting:'fast' };
+  const m = {workout:['none','30','60'], fastfood:['yes','no'], fasting:['none','15','17','19','21']};
+  const p = {workout:'wo', fastfood:'ff', fasting:'fast'};
   m[g].forEach(x => { const e = document.getElementById(p[g]+'-'+x); if(e) e.classList.toggle('active', x===v); });
   updatePreview();
 }
@@ -496,12 +471,11 @@ function setR(g, v) {
 // ── SCORING ────────────────────────────────────────────────────
 function stepsP(s) {
   s=parseInt(s)||0;
-  if(s>=20000)return 8;if(s>=18000)return 7;if(s>=16000)return 6;if(s>=14000)return 4;
-  if(s>=12000)return 3;if(s>=10000)return 2;if(s>=8000)return 1;return 0;
+  if(s>=20000)return 8; if(s>=18000)return 7; if(s>=16000)return 6; if(s>=14000)return 4;
+  if(s>=12000)return 3; if(s>=10000)return 2; if(s>=8000)return 1; return 0;
 }
 function workoutP(w){return w==='60'?4:w==='30'?2:0;}
 function fastingP(f){return{'15':1,'17':2,'19':3,'21':4}[f]||0;}
-function dayPts(steps,wo,ff,fa){return stepsP(steps)+workoutP(wo)+(ff==='no'?1:0)+fastingP(fa);}
 
 function updatePreview() {
   const sp=stepsP(document.getElementById('log-steps').value);
@@ -515,140 +489,176 @@ function updatePreview() {
   document.getElementById('prev-total').textContent=sp+wp+fp+fap;
 }
 
-// ── LOG ────────────────────────────────────────────────────────
+// ── NAME PICKER ────────────────────────────────────────────────
+function renderNamePicker() {
+  const picker = document.getElementById('name-picker');
+  if (!picker) return;
+  picker.innerHTML = participants.map(p =>
+    `<button class="name-btn" onclick="selectName('${p.name}',this)">${p.name}</button>`
+  ).join('');
+}
+
+function selectName(name, btn) {
+  document.getElementById('log-name').value = name;
+  document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ── LOG ENTRY ──────────────────────────────────────────────────
 async function submitLog() {
-  const name=document.getElementById('log-name').value;
-  const date=document.getElementById('log-date').value;
-  const steps=parseInt(document.getElementById('log-steps').value)||0;
-  if(!name||!date){alert('Please select a participant and date.');return;}
-  const btn=document.getElementById('log-btn');
-  btn.disabled=true;btn.textContent='Saving...';
-  const pts=dayPts(steps,radios.workout,radios.fastfood,radios.fasting);
-  const entry={name,date,steps,workout:radios.workout,fastfood:radios.fastfood,fasting:radios.fasting,points:pts,ts:Date.now()};
-  const idx=S.logs.findIndex(l=>l.name===name&&l.date===date);
-  if(idx>=0)S.logs[idx]=entry;else S.logs.push(entry);
-  const ok = await pushData();
-  btn.disabled=false;btn.textContent='Save Entry';
-  if(ok){flash('log-success');renderRecentEntries();}
-  else{showErr('log-error','Save failed — check your connection and try again.');}
+  const name = document.getElementById('log-name').value;
+  const date = document.getElementById('log-date').value;
+  const steps = parseInt(document.getElementById('log-steps').value)||0;
+  if (!name) { showErr('log-error', 'Please select your name.'); return; }
+  if (!date) { showErr('log-error', 'Please select a date.'); return; }
+  
+  const btn = document.getElementById('log-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  
+  const pts = stepsP(steps) + workoutP(radios.workout) + (radios.fastfood==='no'?1:0) + fastingP(radios.fasting);
+  const safeName = name.replace(/[^a-zA-Z0-9]/g, '_');
+  const docId = `${safeName}_${date}`;
+  
+  const entry = { name, date, steps, workout:radios.workout, fastfood:radios.fastfood, fasting:radios.fasting, points:pts, ts:Date.now() };
+  
+  const ok = await fbSet(`logs/${docId}`, entry);
+  btn.disabled = false; btn.textContent = 'Save Entry';
+  
+  if (ok) { flash('log-success'); renderRecentEntries(); }
+  else showErr('log-error', 'Save failed — check connection and try again.');
+}
+
+// ── RECENT ENTRIES ─────────────────────────────────────────────
+async function renderRecentEntries() {
+  const el = document.getElementById('recent-entries');
+  const logs = await fbList('logs');
+  if (!logs.length) { el.innerHTML = '<div class="empty">No entries yet</div>'; return; }
+  const sorted = logs.sort((a,b) => (b.date||'').localeCompare(a.date||'')).slice(0,12);
+  el.innerHTML = sorted.map(l => `
+    <div class="entry-row">
+      <div><div class="entry-name">${l.name||''}</div><div class="entry-date">${fmtDate(l.date)} · ${(l.steps||0).toLocaleString()} steps</div></div>
+      <div class="entry-pts">${l.points||0}</div>
+    </div>`).join('');
 }
 
 // ── WEIGH IN ───────────────────────────────────────────────────
 function renderWeighTab() {
-  const sel=document.getElementById('weigh-week');
-  const cur=sel.value;sel.innerHTML='';
-  for(let w=1;w<=S.settings.weeks;w++){const o=document.createElement('option');o.value=w;o.textContent=`Week ${w}`;sel.appendChild(o);}
-  if(cur)sel.value=cur;
+  const sel = document.getElementById('weigh-week');
+  sel.innerHTML = '';
+  for (let w=1; w<=settings.weeks; w++) {
+    const o = document.createElement('option'); o.value=w; o.textContent=`Week ${w}`; sel.appendChild(o);
+  }
   buildWeighInputs();
 }
 
-function buildWeighInputs() {
-  const week=parseInt(document.getElementById('weigh-week').value)||1;
-  const el=document.getElementById('weigh-inputs');if(!el)return;
-  el.innerHTML=S.participants.map(p=>{
-    const ex=S.weighIns.find(w=>w.name===p.name&&w.week===week);
-    const val=ex?ex.weight:'';
-    let badge='';
-    if(ex&&p.startWeight>0){
-      const pct=(p.startWeight-ex.weight)/p.startWeight*100;
-      if(pct>=2)badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +8pts</span>`;
-      else if(pct>=1)badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +4pts</span>`;
-      else if(pct<=-2)badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -8pts</span>`;
-      else if(pct<=-1)badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -4pts</span>`;
+async function buildWeighInputs() {
+  const week = parseInt(document.getElementById('weigh-week').value)||1;
+  const el = document.getElementById('weigh-inputs');
+  
+  // Load existing weigh-ins for this week
+  const weekWeighIns = {};
+  for (const p of participants) {
+    const safeName = p.name.replace(/[^a-zA-Z0-9]/g, '_');
+    const wi = await fbGet(`weighins/${safeName}_${week}`);
+    if (wi) weekWeighIns[p.name] = wi.weight;
+  }
+  
+  el.innerHTML = participants.map(p => {
+    const val = weekWeighIns[p.name] || '';
+    let badge = '';
+    if (val && p.startWeight > 0) {
+      const pct = (p.startWeight - val) / p.startWeight * 100;
+      if (pct>=2) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +8pts</span>`;
+      else if (pct>=1) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +4pts</span>`;
+      else if (pct<=-2) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -8pts</span>`;
+      else if (pct<=-1) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -4pts</span>`;
       else badge=`<span class="badge" style="background:var(--ice);color:var(--text-secondary);">${pct.toFixed(1)}% 0pts</span>`;
     }
     return `<div class="weigh-person">
       <div class="weigh-name">${p.name}${badge?'<br>'+badge:''}</div>
-      <input type="number" class="weigh-input" id="wi-${p.name.replace(/\s/g,'_')}" value="${val}" placeholder="lbs" min="0" step="0.1">
+      <input type="number" class="weigh-input" id="wi-${p.name.replace(/[^a-zA-Z0-9]/g,'_')}" value="${val}" placeholder="lbs" min="0" step="0.1">
     </div>`;
   }).join('');
 }
 
 async function submitWeighIn() {
-  const week=parseInt(document.getElementById('weigh-week').value)||1;
-  const btn=document.getElementById('weigh-btn');
-  btn.disabled=true;btn.textContent='Saving...';
-  S.participants.forEach(p=>{
-    const el=document.getElementById('wi-'+p.name.replace(/\s/g,'_'));if(!el)return;
-    const val=parseFloat(el.value);
-    if(!isNaN(val)&&val>0){
-      const idx=S.weighIns.findIndex(w=>w.name===p.name&&w.week===week);
-      const entry={name:p.name,week,weight:val};
-      if(idx>=0)S.weighIns[idx]=entry;else S.weighIns.push(entry);
+  const week = parseInt(document.getElementById('weigh-week').value)||1;
+  const btn = document.getElementById('weigh-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+  
+  let allOk = true;
+  for (const p of participants) {
+    const safeName = p.name.replace(/[^a-zA-Z0-9]/g, '_');
+    const el = document.getElementById(`wi-${safeName}`);
+    if (!el) continue;
+    const val = parseFloat(el.value);
+    if (!isNaN(val) && val > 0) {
+      const ok = await fbSet(`weighins/${safeName}_${week}`, { name:p.name, week, weight:val });
+      if (!ok) allOk = false;
     }
-  });
-  const ok=await pushData();
-  btn.disabled=false;btn.textContent='Save Weigh-In';
-  if(ok){flash('weigh-success');buildWeighInputs();}
-  else{showErr('weigh-error','Save failed — try again.');}
+  }
+  
+  btn.disabled=false; btn.textContent='Save Weigh-In';
+  if (allOk) { flash('weigh-success'); buildWeighInputs(); }
+  else showErr('weigh-error', 'Some saves failed — try again.');
 }
 
 // ── LEADERBOARD ────────────────────────────────────────────────
-function calcBoard() {
-  return S.participants.map(p=>{
-    const logs=S.logs.filter(l=>l.name===p.name);
-    const dailyPts=logs.reduce((s,l)=>s+l.points,0);
-    const workoutDays=logs.filter(l=>l.workout!=='none').length;
-    const ffDays=logs.filter(l=>l.fastfood==='no').length;
-    const fastDays=logs.filter(l=>l.fasting&&l.fasting!=='none').length;
-    const avgSteps=logs.length?Math.round(logs.reduce((s,l)=>s+l.steps,0)/logs.length):0;
-    let weightBonus=0,pctLost=0;
-    if(p.startWeight>0){
-      S.weighIns.filter(w=>w.name===p.name).forEach(w=>{
-        const pct=(p.startWeight-w.weight)/p.startWeight*100;
-        if(pct>=2)weightBonus+=8;else if(pct>=1)weightBonus+=4;
-        else if(pct<=-2)weightBonus-=8;else if(pct<=-1)weightBonus-=4;
-      });
-      const latest=[...S.weighIns].filter(w=>w.name===p.name).sort((a,b)=>b.week-a.week)[0];
-      if(latest)pctLost=(p.startWeight-latest.weight)/p.startWeight*100;
-    }
-    return{name:p.name,dailyPts,weightBonus,total:dailyPts+weightBonus,workoutDays,ffDays,fastDays,avgSteps,pctLost,logDays:logs.length};
-  }).sort((a,b)=>b.total-a.total);
-}
-
-let boardRefreshTimer = null;
-
-function startBoardRefresh() {
-  if (boardRefreshTimer) clearInterval(boardRefreshTimer);
-  boardRefreshTimer = setInterval(async () => {
-    await fetchData();
-    renderBoard();
-  }, 60000);
-}
-
-function stopBoardRefresh() {
-  if (boardRefreshTimer) { clearInterval(boardRefreshTimer); boardRefreshTimer = null; }
-}
-
-function renderBoard() {
-  const data=calcBoard();
-  const uniqueDays=new Set(S.logs.map(l=>l.date)).size;
-  let cw='—';
-  if(S.settings.startDate){
-    const diff=Math.floor((new Date()-new Date(S.settings.startDate))/(7*24*60*60*1000))+1;
-    cw=diff>=1&&diff<=S.settings.weeks?diff:diff>S.settings.weeks?'Done':'—';
+async function loadAndRenderBoard() {
+  const el = document.getElementById('leaderboard-rows');
+  el.innerHTML = '<div class="empty" style="color:var(--mist);">Loading...</div>';
+  
+  const [logs, weighIns] = await Promise.all([fbList('logs'), fbList('weighins')]);
+  
+  const uniqueDays = new Set(logs.map(l => l.date)).size;
+  let cw = '—';
+  if (settings.startDate) {
+    const diff = Math.floor((new Date()-new Date(settings.startDate))/(7*24*60*60*1000))+1;
+    cw = diff>=1&&diff<=settings.weeks ? diff : diff>settings.weeks ? 'Done' : '—';
   }
-  document.getElementById('stat-days').textContent=uniqueDays;
-  document.getElementById('stat-entries').textContent=S.logs.length;
-  document.getElementById('stat-week').textContent=cw;
-  const el=document.getElementById('leaderboard-rows');
-  if(!data.length){el.innerHTML='<div class="empty" style="color:var(--mist);">Add participants in Setup to get started.</div>';return;}
-  el.innerHTML=data.map((d,i)=>{
+  document.getElementById('stat-days').textContent = uniqueDays;
+  document.getElementById('stat-entries').textContent = logs.length;
+  document.getElementById('stat-week').textContent = cw;
+  
+  const data = participants.map(p => {
+    const pLogs = logs.filter(l => l.name===p.name);
+    const dailyPts = pLogs.reduce((s,l)=>s+(l.points||0),0);
+    const workoutDays = pLogs.filter(l=>l.workout&&l.workout!=='none').length;
+    const ffDays = pLogs.filter(l=>l.fastfood==='no').length;
+    const fastDays = pLogs.filter(l=>l.fasting&&l.fasting!=='none').length;
+    const avgSteps = pLogs.length ? Math.round(pLogs.reduce((s,l)=>s+(l.steps||0),0)/pLogs.length) : 0;
+    
+    let weightBonus=0, pctLost=0;
+    if (p.startWeight>0) {
+      const pWeighIns = weighIns.filter(w=>w.name===p.name);
+      pWeighIns.forEach(w => {
+        const pct = (p.startWeight-w.weight)/p.startWeight*100;
+        if(pct>=2)weightBonus+=8; else if(pct>=1)weightBonus+=4;
+        else if(pct<=-2)weightBonus-=8; else if(pct<=-1)weightBonus-=4;
+      });
+      const latest = [...pWeighIns].sort((a,b)=>b.week-a.week)[0];
+      if (latest) pctLost=(p.startWeight-latest.weight)/p.startWeight*100;
+    }
+    return { name:p.name, dailyPts, weightBonus, total:dailyPts+weightBonus, workoutDays, ffDays, fastDays, avgSteps, pctLost, logDays:pLogs.length };
+  }).sort((a,b)=>b.total-a.total);
+  
+  if (!data.length) { el.innerHTML='<div class="empty" style="color:var(--mist);">Add participants in Setup.</div>'; return; }
+  
+  el.innerHTML = data.map((d,i) => {
     const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
-    return `<div class="lb-row" onclick="showDetail('${d.name}')">
+    return `<div class="lb-row" onclick="showDetail('${d.name}',${JSON.stringify(data).replace(/'/g,"&#39;")})">
       <div class="rank-num ${rc}">${medal}</div>
       <div class="lb-name">${d.name}</div>
       <div style="text-align:right;"><div class="lb-pts">${d.total}</div><div class="lb-pts-label">pts</div></div>
     </div>`;
   }).join('');
-  document.getElementById('detail-card').innerHTML='';
 }
 
-function showDetail(name) {
-  const data=calcBoard();
-  const d=data.find(x=>x.name===name);if(!d)return;
-  const rank=data.indexOf(d)+1;
+function showDetail(name, dataJson) {
+  const data = typeof dataJson === 'string' ? JSON.parse(dataJson) : dataJson;
+  const d = data.find(x=>x.name===name); if(!d) return;
+  const rank = data.indexOf(d)+1;
   const pc=d.pctLost>0?'#2ECC71':d.pctLost<0?'#E74C3C':'#8EAFC2';
   document.getElementById('detail-card').innerHTML=`
     <div class="card" style="border-top:3px solid var(--fire);">
@@ -657,109 +667,108 @@ function showDetail(name) {
         <div class="hero-pts">${d.total}</div>
         <div class="hero-label">total points</div>
       </div>
-      <div class="detail-row"><span class="detail-key">Daily activity pts</span><span class="detail-val">${d.dailyPts}</span></div>
+      <div class="detail-row"><span class="detail-key">Daily pts</span><span class="detail-val">${d.dailyPts}</span></div>
       <div class="detail-row"><span class="detail-key">Weight bonus/penalty</span><span class="detail-val" style="color:${d.weightBonus>=0?'#2ECC71':'#E74C3C'}">${d.weightBonus>=0?'+':''}${d.weightBonus}</span></div>
       <div class="detail-row"><span class="detail-key">Days logged</span><span class="detail-val">${d.logDays}</span></div>
       <div class="detail-row"><span class="detail-key">Workout days</span><span class="detail-val">${d.workoutDays}</span></div>
       <div class="detail-row"><span class="detail-key">Fast-food-free days</span><span class="detail-val">${d.ffDays}</span></div>
       <div class="detail-row"><span class="detail-key">Fasting days</span><span class="detail-val">${d.fastDays}</span></div>
       <div class="detail-row"><span class="detail-key">Avg daily steps</span><span class="detail-val">${d.avgSteps.toLocaleString()}</span></div>
-      <div class="detail-row"><span class="detail-key">Total weight change</span><span class="detail-val" style="color:${pc}">${d.pctLost>0?'-':d.pctLost<0?'+':''}${Math.abs(d.pctLost).toFixed(1)}%</span></div>
+      <div class="detail-row"><span class="detail-key">Weight change</span><span class="detail-val" style="color:${pc}">${d.pctLost>0?'-':d.pctLost<0?'+':''}${Math.abs(d.pctLost).toFixed(1)}%</span></div>
     </div>`;
   document.getElementById('detail-card').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-// ── SETUP TAB ──────────────────────────────────────────────────
+// ── SETUP ──────────────────────────────────────────────────────
 function renderSetupTab() {
-  document.getElementById('setup-start').value=S.settings.startDate||'';
-  document.getElementById('setup-weeks').value=S.settings.weeks;
-  document.getElementById('setup-fee').value=S.settings.fee;
-  document.getElementById('setup-winner').value=S.settings.winner;
+  document.getElementById('setup-start').value = settings.startDate||'';
+  document.getElementById('setup-weeks').value = settings.weeks;
+  document.getElementById('setup-fee').value = settings.fee;
+  document.getElementById('setup-winner').value = settings.winner;
   renderChips();
 }
 
 async function saveSettings() {
-  S.settings={
-    startDate:document.getElementById('setup-start').value,
-    weeks:parseInt(document.getElementById('setup-weeks').value)||8,
-    fee:parseFloat(document.getElementById('setup-fee').value)||50,
-    winner:parseFloat(document.getElementById('setup-winner').value)||500
+  settings = {
+    startDate: document.getElementById('setup-start').value,
+    weeks: parseInt(document.getElementById('setup-weeks').value)||8,
+    fee: parseFloat(document.getElementById('setup-fee').value)||50,
+    winner: parseFloat(document.getElementById('setup-winner').value)||500
   };
-  const ok=await pushData();
-  if(ok){flash('setup-success');document.getElementById('header-sub').textContent=`${S.settings.weeks}-Week Challenge · $${S.settings.fee} Entry`;}
+  const ok = await fbSet('contest/settings', { settings, participants });
+  if (ok) { flash('setup-success'); document.getElementById('header-sub').textContent=`${settings.weeks}-Week Challenge · $${settings.fee} Entry`; }
   else showErr('setup-error','Save failed.');
 }
 
 function addParticipant() {
-  const val=document.getElementById('new-name').value.trim();if(!val)return;
-  if(S.participants.find(p=>p.name.toLowerCase()===val.toLowerCase())){alert('Already added.');return;}
-  S.participants.push({name:val,startWeight:0});
+  const val = document.getElementById('new-name').value.trim(); if(!val) return;
+  if (participants.find(p=>p.name.toLowerCase()===val.toLowerCase())) { alert('Already added.'); return; }
+  participants.push({name:val, startWeight:0});
   document.getElementById('new-name').value='';
   renderChips();
 }
 
 function removeParticipant(name) {
-  S.participants=S.participants.filter(p=>p.name!==name);renderChips();
+  participants = participants.filter(p=>p.name!==name); renderChips();
 }
 
 async function saveParticipants() {
-  S.participants.forEach(p=>{
-    const el=document.getElementById('sw-'+p.name.replace(/\s/g,'_'));
-    if(el){const v=parseFloat(el.value);if(!isNaN(v)&&v>0)p.startWeight=v;}
+  participants.forEach(p => {
+    const el = document.getElementById('sw-'+p.name.replace(/[^a-zA-Z0-9]/g,'_'));
+    if (el) { const v=parseFloat(el.value); if(!isNaN(v)&&v>0) p.startWeight=v; }
   });
-  const ok=await pushData();
-  if(ok){flash('part-success');renderChips();renderNameSelect();}
-  else showErr('part-error','Save failed — add your API key first.');
-}
-
-function renderNameSelect() {
-  const picker=document.getElementById("name-picker");
-  if(!picker)return;
-  picker.innerHTML=S.participants.map(p=>
-    `<button onclick="selectName('${p.name}',this)" style="padding:10px 16px;border:2px solid #C8DCE8;border-radius:10px;background:#fff;font-size:14px;font-weight:600;color:#0D1B2A;cursor:pointer;font-family:DM Sans,sans-serif;">${p.name}</button>`
-  ).join("");
-}
-
-function selectName(name, btn) {
-  document.getElementById("log-name").value = name;
-  document.querySelectorAll("#name-picker button").forEach(b => {
-    b.style.borderColor = "#C8DCE8";
-    b.style.background = "#fff";
-    b.style.color = "#0D1B2A";
-  });
-  btn.style.borderColor = "#FF4D1C";
-  btn.style.background = "#FFF0EC";
-  btn.style.color = "#C93A10";
+  const ok = await fbSet('contest/settings', { settings, participants });
+  if (ok) { flash('part-success'); renderChips(); renderNamePicker(); }
+  else showErr('part-error','Save failed.');
 }
 
 function renderChips() {
-  const chips=document.getElementById('chip-list');if(!chips)return;
-  chips.innerHTML=S.participants.map(p=>
+  const chips = document.getElementById('chip-list'); if(!chips) return;
+  chips.innerHTML = participants.map(p =>
     `<div class="chip">${p.name}<button class="chip-remove" onclick="removeParticipant('${p.name}')">×</button></div>`
   ).join('');
-  const wf=document.getElementById('weight-form');if(!wf)return;
-  wf.innerHTML=`<div style="font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">Starting weights (lbs)</div>`+
-    S.participants.map(p=>`
-      <div class="form-row" style="margin-bottom:7px;">
+  const wf = document.getElementById('weight-form'); if(!wf) return;
+  wf.innerHTML = `<div style="font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">Starting weights (lbs)</div>` +
+    participants.map(p =>
+      `<div class="form-row" style="margin-bottom:7px;">
         <div class="form-group" style="margin-bottom:0;"><label>${p.name}</label>
-        <input type="number" id="sw-${p.name.replace(/\s/g,'_')}" value="${p.startWeight||''}" placeholder="lbs" min="0" step="0.1"></div>
+        <input type="number" id="sw-${p.name.replace(/[^a-zA-Z0-9]/g,'_')}" value="${p.startWeight||''}" placeholder="lbs" min="0" step="0.1"></div>
       </div>`).join('');
 }
 
-function renderRecentEntries() {
-  const el=document.getElementById('recent-entries');if(!el)return;
-  const sorted=[...S.logs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,12);
-  if(!sorted.length){el.innerHTML='<div class="empty">No entries yet — start logging!</div>';return;}
-  el.innerHTML=sorted.map(l=>`
-    <div class="entry-row">
-      <div><div class="entry-name">${l.name}</div><div class="entry-date">${fmtDate(l.date)} · ${(l.steps||0).toLocaleString()} steps</div></div>
-      <div class="entry-pts">${l.points}</div>
-    </div>`).join('');
+function checkPin(btn) {
+  const pin = prompt('Enter commissioner PIN:');
+  if (pin === '5150') showTab('setup', btn);
+  else if (pin !== null) alert('Incorrect PIN.');
+}
+
+async function resetContest() {
+  const confirm1 = prompt('Type RESET to confirm clearing all contest data:');
+  if (confirm1 !== 'RESET') { alert('Reset cancelled.'); return; }
+  
+  // Delete all logs
+  const logs = await fbList('logs');
+  for (const log of logs) {
+    const safeName = log.name ? log.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
+    await fbDelete(`logs/${safeName}_${log.date}`);
+  }
+  
+  // Delete all weigh-ins
+  const weighIns = await fbList('weighins');
+  for (const wi of weighIns) {
+    const safeName = wi.name ? wi.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
+    await fbDelete(`weighins/${safeName}_${wi.week}`);
+  }
+  
+  flash('reset-success');
 }
 
 function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${m}/${day}`;}
 function flash(id){const el=document.getElementById(id);if(!el)return;el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
 function showErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.style.display='block';setTimeout(()=>el.style.display='none',5000);}
+
+// Fix Setup tab onclick to use PIN
+document.querySelector('.nav-btn:last-child').onclick = function() { checkPin(this); };
 
 init();
 </script>
