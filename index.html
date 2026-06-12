@@ -423,8 +423,16 @@ async function pushData() {
 async function init() {
   localStorage.clear();
   document.getElementById('loading-msg').textContent = 'Syncing contest data...';
-  await fetchData();
-  document.getElementById('loading-overlay').style.display = 'none';
+  // Always hide overlay after 5 seconds max regardless of Firebase status
+  const hideOverlay = () => document.getElementById('loading-overlay').style.display = 'none';
+  const fallbackTimer = setTimeout(hideOverlay, 5000);
+  try {
+    await fetchData();
+  } catch(e) {
+    console.error('Init fetch error:', e);
+  }
+  clearTimeout(fallbackTimer);
+  hideOverlay();
   const now = new Date(); const today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
   document.getElementById('log-date').value = today;
   document.getElementById('header-sub').textContent = `${S.settings.weeks}-Week Challenge · $${S.settings.fee} Entry`;
