@@ -256,7 +256,7 @@ input:focus,select:focus{border-color:var(--fire);}
       <div class="rule-row"><span>18,000 – 19,999</span><span class="pts-pill pill-blue">7 pts</span></div>
       <div class="rule-row"><span style="font-weight:600;color:var(--white);">20,000+ steps</span><span class="pts-pill pill-blue">8 pts</span></div>
       <div class="rules-header" style="margin-top:12px;">Daily bonus activities</div>
-      <div class="rule-row"><div><div>Workout 30–59 min</div><div class="rule-row-sub">Dedicated exercise session — not casual walking</div></div><span class="pts-pill pill-green">+2 pts</span></div>
+      <div class="rule-row"><div><div>Workout 30–59 min</div><div class="rule-row-sub">Gym, running, cycling, swimming, sports, pilates, weights — not walking</div></div><span class="pts-pill pill-green">+2 pts</span></div>
       <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Workout 60+ min</div><div class="rule-row-sub">Higher tier only — not stackable</div></div><span class="pts-pill pill-green">+4 pts</span></div>
       <div class="rule-row"><div>No fast food all day</div><span class="pts-pill pill-green">+1 pt</span></div>
       <div class="rules-header" style="margin-top:12px;">Daily intermittent fasting</div>
@@ -545,9 +545,12 @@ async function renderRecentEntries() {
 function renderWeighTab() {
   const sel = document.getElementById('weigh-week');
   sel.innerHTML = '';
+  const w0 = document.createElement('option'); w0.value=0; w0.textContent='Week 0 (Starting Weight)'; sel.appendChild(w0);
   for (let w=1; w<=settings.weeks; w++) {
     const o = document.createElement('option'); o.value=w; o.textContent=`Week ${w}`; sel.appendChild(o);
   }
+  // Default to Week 1 for regular weigh-ins
+  sel.value = 1;
   buildWeighInputs();
 }
 
@@ -562,8 +565,9 @@ async function buildWeighInputs() {
     const safeName = p.name.replace(/[^a-zA-Z0-9]/g, '_');
     const wi = await fbGet(`weighins/${safeName}_${week}`);
     if (wi) weekWeighIns[p.name] = wi.weight;
-    if (week > 1) {
-      const prevWi = await fbGet(`weighins/${safeName}_${week-1}`);
+    if (week > 0) {
+      const prevWeekNum = week === 1 ? 0 : week - 1;
+      const prevWi = await fbGet(`weighins/${safeName}_${prevWeekNum}`);
       if (prevWi) prevWeekWeighIns[p.name] = prevWi.weight;
     }
   }
@@ -571,9 +575,9 @@ async function buildWeighInputs() {
   el.innerHTML = participants.map(p => {
     const val = weekWeighIns[p.name] || '';
     let badge = '';
-    if (val) {
-      // Use previous week's weight as baseline, or starting weight for week 1
-      const prevWeight = week > 1 && prevWeekWeighIns[p.name] ? prevWeekWeighIns[p.name] : p.startWeight;
+    if (val && week > 0) {
+      // Use previous week's weight as baseline (Week 0 for Week 1, etc.)
+      const prevWeight = prevWeekWeighIns[p.name] ? prevWeekWeighIns[p.name] : p.startWeight;
       if (prevWeight > 0) {
         const pct = (prevWeight - val) / prevWeight * 100;
         if (pct>=2) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +8pts</span>`;
@@ -640,9 +644,12 @@ async function loadAndRenderBoard() {
     let weightBonus=0, pctLost=0;
     if (p.startWeight>0) {
       const pWeighIns = weighIns.filter(w=>w.name===p.name).sort((a,b)=>a.week-b.week);
-      // Week-over-week calculation: each week compares to previous week's weight
-      let prevWeight = p.startWeight;
-      pWeighIns.forEach(w => {
+      // Week-over-week calculation: Week 0 is baseline, no points for Week 0
+      // Sort by week number
+      const week0 = pWeighIns.find(w => w.week === 0);
+      const baseline = week0 ? week0.weight : p.startWeight;
+      let prevWeight = baseline;
+      pWeighIns.filter(w => w.week > 0).forEach(w => {
         const pct = (prevWeight - w.weight) / prevWeight * 100;
         if(pct>=2) weightBonus+=8;
         else if(pct>=1) weightBonus+=4;
