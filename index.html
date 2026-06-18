@@ -365,13 +365,21 @@ async function fbSet(path, data) {
 
 async function fbList(collection) {
   try {
-    const r = await fetch(`${FB_BASE}/${collection}?key=${FB_KEY}`);
-    if (!r.ok) return [];
-    const d = await r.json();
-    return (d.documents || []).map(doc => ({
-      id: doc.name.split('/').pop(),
-      ...fsToJS(doc.fields || {})
-    }));
+    let all = [];
+    let pageToken = null;
+    do {
+      const url = `${FB_BASE}/${collection}?key=${FB_KEY}&pageSize=300${pageToken ? '&pageToken=' + pageToken : ''}`;
+      const r = await fetch(url);
+      if (!r.ok) break;
+      const d = await r.json();
+      const docs = (d.documents || []).map(doc => ({
+        id: doc.name.split('/').pop(),
+        ...fsToJS(doc.fields || {})
+      }));
+      all = all.concat(docs);
+      pageToken = d.nextPageToken || null;
+    } while (pageToken);
+    return all;
   } catch(e) { return []; }
 }
 
@@ -533,7 +541,7 @@ async function renderRecentEntries() {
   const el = document.getElementById('recent-entries');
   const logs = await fbList('logs');
   if (!logs.length) { el.innerHTML = '<div class="empty">No entries yet</div>'; return; }
-  const sorted = logs.sort((a,b) => (b.date||'').localeCompare(a.date||'')).slice(0,12);
+  const sorted = logs.sort((a,b) => (b.date||'').localeCompare(a.date||'')).slice(0,60);
   el.innerHTML = sorted.map(l => `
     <div class="entry-row">
       <div><div class="entry-name">${l.name||''}</div><div class="entry-date">${fmtDate(l.date)} · ${(l.steps||0).toLocaleString()} steps</div></div>
