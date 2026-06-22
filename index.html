@@ -743,19 +743,27 @@ async function loadChampions() {
   const [allLogs, allWeighIns] = await Promise.all([fbList('logs'), fbList('weighins')]);
 
   // Determine the date range for this week based on contest start date
-  let weekStart = null, weekEnd = null;
+  // Parse dates as local-time y/m/d to avoid UTC timezone shifting entries into the wrong week
+  function parseLocalDate(dateStr) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  let weekStartStr = null, weekEndStr = null;
   if (settings.startDate) {
-    const start = new Date(settings.startDate);
-    weekStart = new Date(start);
-    weekStart.setDate(start.getDate() + (week-1)*7);
-    weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekStart.getDate() + 6);
+    const start = parseLocalDate(settings.startDate);
+    const ws = new Date(start);
+    ws.setDate(start.getDate() + (week-1)*7);
+    const we = new Date(ws);
+    we.setDate(ws.getDate() + 6);
+    // Convert to comparable strings (YYYY-MM-DD) instead of Date objects to avoid time-of-day issues
+    weekStartStr = ws.getFullYear() + '-' + String(ws.getMonth()+1).padStart(2,'0') + '-' + String(ws.getDate()).padStart(2,'0');
+    weekEndStr = we.getFullYear() + '-' + String(we.getMonth()+1).padStart(2,'0') + '-' + String(we.getDate()).padStart(2,'0');
   }
 
   function inWeek(dateStr) {
-    if (!weekStart || !dateStr) return false;
-    const d = new Date(dateStr + 'T00:00:00');
-    return d >= weekStart && d <= weekEnd;
+    if (!weekStartStr || !dateStr) return false;
+    return dateStr >= weekStartStr && dateStr <= weekEndStr;
   }
 
   const weekLogs = allLogs.filter(l => inWeek(l.date));
