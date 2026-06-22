@@ -254,6 +254,7 @@ input:focus,select:focus{border-color:var(--fire);}
       <label style="color:var(--mist);">Week</label>
       <select id="champ-week" onchange="loadChampions()"></select>
     </div>
+    <div id="champ-week-range" style="font-size:11px;color:var(--mist);margin-bottom:10px;text-align:center;"></div>
     <div id="champs-content"><div class="empty" style="color:var(--mist);">Loading...</div></div>
 
     <div class="card-dark" style="margin-top:18px;margin-bottom:12px;">
@@ -866,6 +867,16 @@ async function loadChampions() {
     // Convert to comparable strings (YYYY-MM-DD) instead of Date objects to avoid time-of-day issues
     weekStartStr = ws.getFullYear() + '-' + String(ws.getMonth()+1).padStart(2,'0') + '-' + String(ws.getDate()).padStart(2,'0');
     weekEndStr = we.getFullYear() + '-' + String(we.getMonth()+1).padStart(2,'0') + '-' + String(we.getDate()).padStart(2,'0');
+  }
+
+  const rangeEl = document.getElementById('champ-week-range');
+  if (rangeEl) {
+    if (weekStartStr && weekEndStr) {
+      const fmtNice = (s) => { const [y,m,d] = s.split('-'); return `${m}/${d}/${y}`; };
+      rangeEl.textContent = `Week ${week}: ${fmtNice(weekStartStr)} – ${fmtNice(weekEndStr)} (today is ${(new Date()).getMonth()+1}/${(new Date()).getDate()}/${(new Date()).getFullYear()})`;
+    } else {
+      rangeEl.textContent = 'No contest start date set — go to Setup to add one';
+    }
   }
 
   function inWeek(dateStr) {
