@@ -121,6 +121,11 @@ input:focus,select:focus{border-color:var(--fire);}
 .name-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .name-btn{padding:10px 16px;border:2px solid var(--fog);border-radius:10px;background:var(--white);font-size:14px;font-weight:600;color:var(--text-primary);cursor:pointer;font-family:'DM Sans',sans-serif;}
 .name-btn.selected{border-color:var(--fire);background:#FFF0EC;color:var(--fire-dark);}
+.champ-card{background:linear-gradient(135deg,rgba(255,77,28,0.08),rgba(245,166,35,0.08));border:1px solid rgba(255,77,28,0.15);border-radius:12px;padding:12px;margin-bottom:10px;}
+.champ-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.champ-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.champ-name{font-weight:600;font-size:14px;flex:1;}
+.champ-stat{font-family:'DM Mono',monospace;font-size:12px;color:var(--text-secondary);}
 </style>
 </head>
 <body>
@@ -134,8 +139,9 @@ input:focus,select:focus{border-color:var(--fire);}
     <button class="nav-btn active" onclick="showTab('log',this)"><span class="nav-icon">✏️</span>Log Day</button>
     <button class="nav-btn" onclick="showTab('weigh',this)"><span class="nav-icon">⚖️</span>Weigh-In</button>
     <button class="nav-btn" onclick="showTab('board',this)"><span class="nav-icon">🏆</span>Standings</button>
+    <button class="nav-btn" onclick="showTab('champs',this)"><span class="nav-icon">🎖️</span>Champions</button>
     <button class="nav-btn" onclick="showTab('rules',this)"><span class="nav-icon">📋</span>Rules</button>
-    <button class="nav-btn" onclick="showTab('setup',this)"><span class="nav-icon">⚙️</span>Setup</button>
+    <button class="nav-btn" onclick="checkPin(this)"><span class="nav-icon">⚙️</span>Setup</button>
   </nav>
 </div>
 
@@ -238,6 +244,19 @@ input:focus,select:focus{border-color:var(--fire);}
     <div id="detail-card"></div>
   </div>
 
+  <!-- CHAMPIONS TAB -->
+  <div id="tab-champs" class="panel">
+    <div class="card-dark" style="margin-bottom:12px;">
+      <div class="card-title-light">🎖️ Weekly Champions</div>
+      <div style="font-size:12px;color:var(--mist);">Category leaders for each completed week of the contest</div>
+    </div>
+    <div class="week-selector">
+      <label style="color:var(--mist);">Week</label>
+      <select id="champ-week" onchange="loadChampions()"></select>
+    </div>
+    <div id="champs-content"><div class="empty" style="color:var(--mist);">Loading...</div></div>
+  </div>
+
   <!-- RULES TAB -->
   <div id="tab-rules" class="panel">
     <div class="card-dark">
@@ -333,14 +352,8 @@ input:focus,select:focus{border-color:var(--fire);}
 
 <script>
 // ── FIREBASE REST API ──────────────────────────────────────────
-// Uses Firestore REST API - no module imports, no scope issues
 const FB_KEY = 'AIzaSyD1GAOXZG7jslv0lmIGw0xB1UJGVYmvxDo';
 const FB_BASE = 'https://firestore.googleapis.com/v1/projects/family-fitness-throwdown/databases/(default)/documents';
-
-// Each participant's logs stored as separate documents to prevent race conditions
-// contest/settings - contest settings and participants
-// logs/{name}_{date} - individual daily log entries  
-// weighins/{name}_{week} - individual weigh-in entries
 
 async function fbGet(path) {
   try {
@@ -442,7 +455,6 @@ async function init() {
   const today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
   document.getElementById('log-date').value = today;
   
-  // Load settings
   const s = await fbGet('contest/settings');
   if (s) {
     if (s.settings) settings = s.settings;
@@ -465,6 +477,7 @@ function showTab(id, btn) {
   if (id === 'weigh') renderWeighTab();
   if (id === 'setup') renderSetupTab();
   if (id === 'log') renderRecentEntries();
+  if (id === 'champs') renderChampsTab();
 }
 
 // ── RADIO ──────────────────────────────────────────────────────
@@ -557,7 +570,6 @@ function renderWeighTab() {
   for (let w=1; w<=settings.weeks; w++) {
     const o = document.createElement('option'); o.value=w; o.textContent=`Week ${w}`; sel.appendChild(o);
   }
-  // Default to Week 1 for regular weigh-ins
   sel.value = 1;
   buildWeighInputs();
 }
@@ -566,7 +578,6 @@ async function buildWeighInputs() {
   const week = parseInt(document.getElementById('weigh-week').value)||1;
   const el = document.getElementById('weigh-inputs');
   
-  // Load existing weigh-ins for this week and previous week
   const weekWeighIns = {};
   const prevWeekWeighIns = {};
   for (const p of participants) {
@@ -584,7 +595,6 @@ async function buildWeighInputs() {
     const val = weekWeighIns[p.name] || '';
     let badge = '';
     if (val && week > 0) {
-      // Use previous week's weight as baseline (Week 0 for Week 1, etc.)
       const prevWeight = prevWeekWeighIns[p.name] ? prevWeekWeighIns[p.name] : p.startWeight;
       if (prevWeight > 0) {
         const pct = (prevWeight - val) / prevWeight * 100;
@@ -652,8 +662,6 @@ async function loadAndRenderBoard() {
     let weightBonus=0, pctLost=0;
     if (p.startWeight>0) {
       const pWeighIns = weighIns.filter(w=>w.name===p.name).sort((a,b)=>a.week-b.week);
-      // Week-over-week calculation: Week 0 is baseline, no points for Week 0
-      // Sort by week number
       const week0 = pWeighIns.find(w => w.week === 0);
       const baseline = week0 ? week0.weight : p.startWeight;
       let prevWeight = baseline;
@@ -663,7 +671,7 @@ async function loadAndRenderBoard() {
         else if(pct>=1) weightBonus+=4;
         else if(pct<=-2) weightBonus-=8;
         else if(pct<=-1) weightBonus-=4;
-        prevWeight = w.weight; // this week's weight becomes next week's baseline
+        prevWeight = w.weight;
       });
       const latest = [...pWeighIns].sort((a,b)=>b.week-a.week)[0];
       if (latest) pctLost=(p.startWeight-latest.weight)/p.startWeight*100;
@@ -673,7 +681,6 @@ async function loadAndRenderBoard() {
   
   if (!data.length) { el.innerHTML='<div class="empty" style="color:var(--mist);">Add participants in Setup.</div>'; return; }
   
-  // Store data globally for detail view
   window._boardData = data;
   
   el.innerHTML = data.map((d,i) => {
@@ -710,6 +717,121 @@ function showDetail(name) {
       <div class="detail-row"><span class="detail-key">Weight change</span><span class="detail-val" style="color:${pc}">${d.pctLost>0?'-':d.pctLost<0?'+':''}${Math.abs(d.pctLost).toFixed(1)}%</span></div>
     </div>`;
   document.getElementById('detail-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── WEEKLY CHAMPIONS ───────────────────────────────────────────
+function renderChampsTab() {
+  const sel = document.getElementById('champ-week');
+  sel.innerHTML = '';
+  let maxWeek = 1;
+  if (settings.startDate) {
+    const diff = Math.floor((new Date()-new Date(settings.startDate))/(7*24*60*60*1000))+1;
+    maxWeek = Math.max(1, Math.min(diff, settings.weeks));
+  }
+  for (let w=1; w<=maxWeek; w++) {
+    const o = document.createElement('option'); o.value=w; o.textContent=`Week ${w}`; sel.appendChild(o);
+  }
+  sel.value = maxWeek;
+  loadChampions();
+}
+
+async function loadChampions() {
+  const week = parseInt(document.getElementById('champ-week').value)||1;
+  const el = document.getElementById('champs-content');
+  el.innerHTML = '<div class="empty" style="color:var(--mist);">Loading...</div>';
+
+  const [allLogs, allWeighIns] = await Promise.all([fbList('logs'), fbList('weighins')]);
+
+  // Determine the date range for this week based on contest start date
+  let weekStart = null, weekEnd = null;
+  if (settings.startDate) {
+    const start = new Date(settings.startDate);
+    weekStart = new Date(start);
+    weekStart.setDate(start.getDate() + (week-1)*7);
+    weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+  }
+
+  function inWeek(dateStr) {
+    if (!weekStart || !dateStr) return false;
+    const d = new Date(dateStr + 'T00:00:00');
+    return d >= weekStart && d <= weekEnd;
+  }
+
+  const weekLogs = allLogs.filter(l => inWeek(l.date));
+
+  // Per-participant weekly aggregates
+  const stats = participants.map(p => {
+    const pLogs = weekLogs.filter(l => l.name === p.name);
+    const totalSteps = pLogs.reduce((s,l)=>s+(l.steps||0),0);
+    const avgSteps = pLogs.length ? Math.round(totalSteps/pLogs.length) : 0;
+    const workoutCount = pLogs.filter(l=>l.workout && l.workout !== 'none').length;
+    const fastHoursMap = {'15':15,'17':17,'19':19,'21':21};
+    const totalFastHours = pLogs.reduce((s,l)=> s + (fastHoursMap[l.fasting]||0), 0);
+    const ffDays = pLogs.filter(l=>l.fastfood==='no').length;
+    const weeklyPts = pLogs.reduce((s,l)=>s+(l.points||0),0);
+
+    // Weight % change for this week (vs previous week)
+    const safeName = p.name.replace(/[^a-zA-Z0-9]/g,'_');
+    const thisWeekWi = allWeighIns.find(w => w.name===p.name && w.week===week);
+    const prevWeekNum = week === 1 ? 0 : week - 1;
+    const prevWi = allWeighIns.find(w => w.name===p.name && w.week===prevWeekNum);
+    const baseline = prevWi ? prevWi.weight : p.startWeight;
+    let pctChange = null;
+    if (thisWeekWi && baseline > 0) {
+      pctChange = (baseline - thisWeekWi.weight) / baseline * 100;
+    }
+
+    return { name:p.name, totalSteps, avgSteps, workoutCount, totalFastHours, ffDays, weeklyPts, pctChange, daysLogged: pLogs.length };
+  });
+
+  if (!stats.some(s => s.daysLogged > 0)) {
+    el.innerHTML = '<div class="empty" style="color:var(--mist);">No entries logged for this week yet.</div>';
+    return;
+  }
+
+  function topOf(arr, key, dir='desc') {
+    const valid = arr.filter(s => s[key] !== null && s[key] !== undefined && !isNaN(s[key]));
+    if (!valid.length) return null;
+    return [...valid].sort((a,b)=> dir==='desc' ? b[key]-a[key] : a[key]-b[key])[0];
+  }
+
+  const mostSteps = topOf(stats, 'avgSteps');
+  const mostWorkouts = topOf(stats, 'workoutCount');
+  const mostFastHours = topOf(stats, 'totalFastHours');
+  const biggestLoser = topOf(stats.filter(s=>s.pctChange!==null), 'pctChange');
+  const mostPoints = topOf(stats, 'weeklyPts');
+  const mostCleanEating = topOf(stats, 'ffDays');
+
+  function champRow(icon, label, winner, statText) {
+    if (!winner) return `<div class="champ-row"><div class="champ-icon">${icon}</div><div class="champ-name" style="color:var(--text-muted);">${label}: No data yet</div></div>`;
+    return `<div class="champ-row">
+      <div class="champ-icon">${icon}</div>
+      <div class="champ-name">${label}: ${winner.name}</div>
+      <div class="champ-stat">${statText}</div>
+    </div>`;
+  }
+
+  el.innerHTML = `
+    <div class="champ-card">
+      ${champRow('🏆', 'Most Points', mostPoints, mostPoints ? mostPoints.weeklyPts + ' pts' : '')}
+    </div>
+    <div class="champ-card">
+      ${champRow('📉', 'Biggest % Loss', biggestLoser, biggestLoser ? (biggestLoser.pctChange>=0?'-':'+') + Math.abs(biggestLoser.pctChange).toFixed(1) + '%' : '')}
+    </div>
+    <div class="champ-card">
+      ${champRow('👟', 'Most Steps (avg/day)', mostSteps, mostSteps ? mostSteps.avgSteps.toLocaleString() + ' steps' : '')}
+    </div>
+    <div class="champ-card">
+      ${champRow('💪', 'Most Workouts', mostWorkouts, mostWorkouts ? mostWorkouts.workoutCount + ' workouts' : '')}
+    </div>
+    <div class="champ-card">
+      ${champRow('⏱️', 'Most Hours Fasted (total)', mostFastHours, mostFastHours ? mostFastHours.totalFastHours + ' hrs' : '')}
+    </div>
+    <div class="champ-card">
+      ${champRow('🥗', 'Most Fast-Food-Free Days', mostCleanEating, mostCleanEating ? mostCleanEating.ffDays + ' days' : '')}
+    </div>
+  `;
 }
 
 // ── SETUP ──────────────────────────────────────────────────────
@@ -779,14 +901,12 @@ async function resetContest() {
   const confirm1 = prompt('Type RESET to confirm clearing all contest data:');
   if (confirm1 !== 'RESET') { alert('Reset cancelled.'); return; }
   
-  // Delete all logs
   const logs = await fbList('logs');
   for (const log of logs) {
     const safeName = log.name ? log.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
     await fbDelete(`logs/${safeName}_${log.date}`);
   }
   
-  // Delete all weigh-ins
   const weighIns = await fbList('weighins');
   for (const wi of weighIns) {
     const safeName = wi.name ? wi.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
@@ -799,9 +919,6 @@ async function resetContest() {
 function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${m}/${day}`;}
 function flash(id){const el=document.getElementById(id);if(!el)return;el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
 function showErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.style.display='block';setTimeout(()=>el.style.display='none',5000);}
-
-// Fix Setup tab onclick to use PIN
-document.querySelector('.nav-btn:last-child').onclick = function() { checkPin(this); };
 
 init();
 </script>
