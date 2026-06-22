@@ -769,18 +769,23 @@ async function loadChampions() {
     const fastHoursMap = {'15':15,'17':17,'19':19,'21':21};
     const totalFastHours = pLogs.reduce((s,l)=> s + (fastHoursMap[l.fasting]||0), 0);
     const ffDays = pLogs.filter(l=>l.fastfood==='no').length;
-    const weeklyPts = pLogs.reduce((s,l)=>s+(l.points||0),0);
+    const dailyPts = pLogs.reduce((s,l)=>s+(l.points||0),0);
 
-    // Weight % change for this week (vs previous week)
-    const safeName = p.name.replace(/[^a-zA-Z0-9]/g,'_');
+    // Weight % change for this week (vs previous week) + weigh-in bonus/penalty
     const thisWeekWi = allWeighIns.find(w => w.name===p.name && w.week===week);
     const prevWeekNum = week === 1 ? 0 : week - 1;
     const prevWi = allWeighIns.find(w => w.name===p.name && w.week===prevWeekNum);
     const baseline = prevWi ? prevWi.weight : p.startWeight;
     let pctChange = null;
+    let weighInBonus = 0;
     if (thisWeekWi && baseline > 0) {
       pctChange = (baseline - thisWeekWi.weight) / baseline * 100;
+      if (pctChange >= 2) weighInBonus = 8;
+      else if (pctChange >= 1) weighInBonus = 4;
+      else if (pctChange <= -2) weighInBonus = -8;
+      else if (pctChange <= -1) weighInBonus = -4;
     }
+    const weeklyPts = dailyPts + weighInBonus;
 
     return { name:p.name, totalSteps, avgSteps, workoutCount, totalFastHours, ffDays, weeklyPts, pctChange, daysLogged: pLogs.length };
   });
@@ -791,9 +796,11 @@ async function loadChampions() {
   }
 
   function topOf(arr, key, dir='desc') {
-    const valid = arr.filter(s => s[key] !== null && s[key] !== undefined && !isNaN(s[key]));
-    if (!valid.length) return null;
-    return [...valid].sort((a,b)=> dir==='desc' ? b[key]-a[key] : a[key]-b[key])[0];
+    const valid = arr.filter(s => s[key] !== null && s[key] !== undefined && !isNaN(s[key]) && s[key] !== 0);
+    if (!valid.length) return [];
+    const sorted = [...valid].sort((a,b)=> dir==='desc' ? b[key]-a[key] : a[key]-b[key]);
+    const topVal = sorted[0][key];
+    return sorted.filter(s => s[key] === topVal);
   }
 
   const mostSteps = topOf(stats, 'avgSteps');
@@ -801,35 +808,33 @@ async function loadChampions() {
   const mostFastHours = topOf(stats, 'totalFastHours');
   const biggestLoser = topOf(stats.filter(s=>s.pctChange!==null), 'pctChange');
   const mostPoints = topOf(stats, 'weeklyPts');
-  const mostCleanEating = topOf(stats, 'ffDays');
 
-  function champRow(icon, label, winner, statText) {
-    if (!winner) return `<div class="champ-row"><div class="champ-icon">${icon}</div><div class="champ-name" style="color:var(--text-muted);">${label}: No data yet</div></div>`;
+  function champRow(icon, label, winners, statKey, statSuffix) {
+    if (!winners || !winners.length) return `<div class="champ-row"><div class="champ-icon">${icon}</div><div class="champ-name" style="color:var(--text-muted);">${label}: No data yet</div></div>`;
+    const names = winners.map(w => w.name).join(' & ');
+    const statText = winners[0][statKey] + statSuffix;
     return `<div class="champ-row">
       <div class="champ-icon">${icon}</div>
-      <div class="champ-name">${label}: ${winner.name}</div>
+      <div class="champ-name">${names}${winners.length>1?' (tied)':''}<div style="font-size:10px;color:var(--text-muted);font-weight:400;">${label}</div></div>
       <div class="champ-stat">${statText}</div>
     </div>`;
   }
 
   el.innerHTML = `
     <div class="champ-card">
-      ${champRow('🏆', 'Most Points', mostPoints, mostPoints ? mostPoints.weeklyPts + ' pts' : '')}
+      ${champRow('🏆', 'Most Points', mostPoints, 'weeklyPts', ' pts')}
     </div>
     <div class="champ-card">
-      ${champRow('📉', 'Biggest % Loss', biggestLoser, biggestLoser ? (biggestLoser.pctChange>=0?'-':'+') + Math.abs(biggestLoser.pctChange).toFixed(1) + '%' : '')}
+      ${biggestLoser.length ? champRow('📉', 'Biggest % Loss', biggestLoser.map(w=>({...w, pctChangeDisplay:(w.pctChange>=0?'-':'+')+Math.abs(w.pctChange).toFixed(1)+'%'})), 'pctChangeDisplay', '') : champRow('📉','Biggest % Loss',[],'','')}
     </div>
     <div class="champ-card">
-      ${champRow('👟', 'Most Steps (avg/day)', mostSteps, mostSteps ? mostSteps.avgSteps.toLocaleString() + ' steps' : '')}
+      ${champRow('👟', 'Most Steps (avg/day)', mostSteps.map(w=>({...w, avgStepsDisplay:w.avgSteps.toLocaleString()})), 'avgStepsDisplay', ' steps')}
     </div>
     <div class="champ-card">
-      ${champRow('💪', 'Most Workouts', mostWorkouts, mostWorkouts ? mostWorkouts.workoutCount + ' workouts' : '')}
+      ${champRow('💪', 'Most Workouts', mostWorkouts, 'workoutCount', ' workouts')}
     </div>
     <div class="champ-card">
-      ${champRow('⏱️', 'Most Hours Fasted (total)', mostFastHours, mostFastHours ? mostFastHours.totalFastHours + ' hrs' : '')}
-    </div>
-    <div class="champ-card">
-      ${champRow('🥗', 'Most Fast-Food-Free Days', mostCleanEating, mostCleanEating ? mostCleanEating.ffDays + ' days' : '')}
+      ${champRow('⏱️', 'Most Hours Fasted (total)', mostFastHours, 'totalFastHours', ' hrs')}
     </div>
   `;
 }
