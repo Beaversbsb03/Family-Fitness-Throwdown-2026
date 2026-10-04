@@ -25,7 +25,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);
 .header-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:2px;letter-spacing:0.05em;font-weight:500;}
 .nav{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--navy-mid);}
 .nav::-webkit-scrollbar{display:none;}
-.nav-btn{flex:1;min-width:60px;padding:10px 4px 8px;border:none;background:none;color:var(--mist);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.04em;cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
+.nav-btn{flex:1;min-width:55px;padding:10px 4px 8px;border:none;background:none;color:var(--mist);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.04em;cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;transition:all 0.15s;white-space:nowrap;}
 .nav-btn.active{color:var(--fire);border-bottom-color:var(--fire);}
 .nav-btn:hover:not(.active){color:var(--fog);}
 .nav-icon{font-size:14px;display:block;margin-bottom:2px;}
@@ -89,7 +89,6 @@ input:focus,select:focus{border-color:var(--fire);}
 .pill-green{background:rgba(46,204,113,0.15);color:#6EE7B7;}
 .pill-purple{background:rgba(139,92,246,0.18);color:#C4B5FD;}
 .pill-amber{background:rgba(245,158,11,0.18);color:#FCD34D;}
-.pill-red{background:rgba(231,76,60,0.18);color:#FCA5A5;}
 .pill-gray{background:rgba(255,255,255,0.07);color:var(--mist);}
 .prize-row{display:flex;gap:8px;margin-top:4px;}
 .prize-item{flex:1;background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,0.08);}
@@ -133,7 +132,7 @@ input:focus,select:focus{border-color:var(--fire);}
 <div class="app-header">
   <div class="header-top">
     <div class="header-title">The Family Fitness Throwdown 2026</div>
-    <div class="header-sub" id="header-sub">8-Week Challenge · $50 Entry</div>
+    <div class="header-sub" id="header-sub">12-Week Challenge · $50 Entry</div>
   </div>
   <nav class="nav">
     <button class="nav-btn active" onclick="showTab('log',this)"><span class="nav-icon">✏️</span>Log Day</button>
@@ -184,10 +183,11 @@ input:focus,select:focus{border-color:var(--fire);}
         <label>Fasting window</label>
         <div class="radio-group" style="flex-wrap:wrap;">
           <div class="radio-opt active" id="fast-none" onclick="setR('fasting','none')" style="min-width:calc(50% - 3px);">None<br><span style="font-size:10px;opacity:0.7">0 pts</span></div>
-          <div class="radio-opt" id="fast-15" onclick="setR('fasting','15')" style="min-width:calc(50% - 3px);">15 hrs<br><span style="font-size:10px;opacity:0.7">+1 pt</span></div>
-          <div class="radio-opt" id="fast-17" onclick="setR('fasting','17')" style="min-width:calc(50% - 3px);margin-top:5px;">17 hrs<br><span style="font-size:10px;opacity:0.7">+2 pts</span></div>
-          <div class="radio-opt" id="fast-19" onclick="setR('fasting','19')" style="min-width:calc(50% - 3px);margin-top:5px;">19 hrs<br><span style="font-size:10px;opacity:0.7">+3 pts</span></div>
-          <div class="radio-opt" id="fast-21" onclick="setR('fasting','21')" style="min-width:100%;margin-top:5px;">21+ hrs (max fast)<br><span style="font-size:10px;opacity:0.7">+4 pts</span></div>
+          <div class="radio-opt" id="fast-16" onclick="setR('fasting','16')" style="min-width:calc(50% - 3px);">16 hrs<br><span style="font-size:10px;opacity:0.7">+1 pt</span></div>
+          <div class="radio-opt" id="fast-18" onclick="setR('fasting','18')" style="min-width:calc(50% - 3px);margin-top:5px;">18 hrs<br><span style="font-size:10px;opacity:0.7">+2 pts</span></div>
+          <div class="radio-opt" id="fast-20" onclick="setR('fasting','20')" style="min-width:calc(50% - 3px);margin-top:5px;">20 hrs<br><span style="font-size:10px;opacity:0.7">+3 pts</span></div>
+          <div class="radio-opt" id="fast-22" onclick="setR('fasting','22')" style="min-width:calc(50% - 3px);margin-top:5px;">22 hrs<br><span style="font-size:10px;opacity:0.7">+4 pts</span></div>
+          <div class="radio-opt" id="fast-24" onclick="setR('fasting','24')" style="min-width:calc(50% - 3px);margin-top:5px;">24 hrs<br><span style="font-size:10px;opacity:0.7">+5 pts</span></div>
         </div>
       </div>
       <div class="points-preview">
@@ -221,11 +221,9 @@ input:focus,select:focus{border-color:var(--fire);}
     <div class="card">
       <div class="card-title">Weight scoring</div>
       <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>Lost 1% of starting weight</span><span class="badge badge-green">+4 pts</span></div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>Lost 2%+ of starting weight</span><span class="badge badge-green">+8 pts</span></div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>Under 1% change</span><span class="badge" style="background:var(--ice);color:var(--text-secondary);">0 pts</span></div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>Gained 1% of starting weight</span><span class="badge badge-red">-4 pts</span></div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Gained 2%+ of starting weight</span><span class="badge badge-red">-8 pts</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>Lost 1% vs previous week's weight</span><span class="badge badge-green">+4 pts</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>Lost 2%+ vs previous week's weight</span><span class="badge badge-green">+8 pts</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Under 1% change or any gain</span><span class="badge" style="background:var(--ice);color:var(--text-secondary);">0 pts</span></div>
       </div>
     </div>
   </div>
@@ -235,7 +233,7 @@ input:focus,select:focus{border-color:var(--fire);}
     <div class="stat-grid">
       <div class="stat-card"><div class="stat-val" id="stat-days">0</div><div class="stat-lbl">Days logged</div></div>
       <div class="stat-card"><div class="stat-val" id="stat-entries">0</div><div class="stat-lbl">Total entries</div></div>
-      <div class="stat-card"><div class="stat-val" id="stat-week">—</div><div class="stat-lbl">Current week</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-week">--</div><div class="stat-lbl">Current week</div></div>
     </div>
     <div class="card-dark">
       <div class="card-title-light">Live leaderboard</div>
@@ -248,7 +246,7 @@ input:focus,select:focus{border-color:var(--fire);}
   <div id="tab-champs" class="panel">
     <div class="card-dark" style="margin-bottom:12px;">
       <div class="card-title-light">🎖️ Weekly Champions</div>
-      <div style="font-size:12px;color:var(--mist);">Category leaders for each completed week of the contest</div>
+      <div style="font-size:12px;color:var(--mist);">Category leaders for each completed week</div>
     </div>
     <div class="week-selector">
       <label style="color:var(--mist);">Week</label>
@@ -274,7 +272,7 @@ input:focus,select:focus{border-color:var(--fire);}
       <div style="text-align:center;margin-bottom:14px;">
         <div style="font-size:32px;margin-bottom:5px;">🔥</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--white);">The Family Fitness Throwdown 2026</div>
-        <div style="font-size:12px;color:var(--mist);margin-top:3px;">8-week challenge · $50 entry · 16 participants</div>
+        <div style="font-size:12px;color:var(--mist);margin-top:3px;">12-week challenge · $50 entry · Oct 5 – Dec 28</div>
       </div>
       <div class="rules-header">Daily step scoring</div>
       <div class="rule-row"><span>Under 8,000 steps</span><span class="pts-pill pill-gray">0 pts</span></div>
@@ -290,17 +288,16 @@ input:focus,select:focus{border-color:var(--fire);}
       <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Workout 60+ min</div><div class="rule-row-sub">Higher tier only — not stackable</div></div><span class="pts-pill pill-green">+4 pts</span></div>
       <div class="rule-row"><div>No fast food all day</div><span class="pts-pill pill-green">+1 pt</span></div>
       <div class="rules-header" style="margin-top:12px;">Daily intermittent fasting</div>
-      <div class="rule-row"><span>Under 15 hours</span><span class="pts-pill pill-gray">0 pts</span></div>
-      <div class="rule-row"><div><div>15 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 11am</div></div><span class="pts-pill pill-purple">+1 pt</span></div>
-      <div class="rule-row"><div><div>17 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 1pm</div></div><span class="pts-pill pill-purple">+2 pts</span></div>
-      <div class="rule-row"><div><div>19 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 3pm</div></div><span class="pts-pill pill-purple">+3 pts</span></div>
-      <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">21+ hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 5pm</div></div><span class="pts-pill pill-purple">+4 pts</span></div>
-      <div class="rules-header" style="margin-top:12px;">Weekly weigh-in — bonus & penalty</div>
-      <div class="rule-row"><div><div>Lost 1% vs previous week's weight</div><div class="rule-row-sub">Week 1 compares to starting weight</div></div><span class="pts-pill pill-amber">+4 pts</span></div>
-      <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Lost 2%+ vs previous week's weight</div><div class="rule-row-sub">Higher tier only</div></div><span class="pts-pill pill-amber">+8 pts</span></div>
-      <div class="rule-row"><span>Under 1% change either way</span><span class="pts-pill pill-gray">0 pts</span></div>
-      <div class="rule-row"><div>Gained 1% vs previous week's weight</div><span class="pts-pill pill-red">-4 pts</span></div>
-      <div class="rule-row"><div style="color:var(--white);font-weight:600;">Gained 2%+ vs previous week's weight</div><span class="pts-pill pill-red">-8 pts</span></div>
+      <div class="rule-row"><span>Under 16 hours</span><span class="pts-pill pill-gray">0 pts</span></div>
+      <div class="rule-row"><div><div>16 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 12pm</div></div><span class="pts-pill pill-purple">+1 pt</span></div>
+      <div class="rule-row"><div><div>18 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 2pm</div></div><span class="pts-pill pill-purple">+2 pts</span></div>
+      <div class="rule-row"><div><div>20 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 4pm</div></div><span class="pts-pill pill-purple">+3 pts</span></div>
+      <div class="rule-row"><div><div>22 hrs fasted</div><div class="rule-row-sub">e.g. 8pm – 6pm</div></div><span class="pts-pill pill-purple">+4 pts</span></div>
+      <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">24 hrs fasted</div><div class="rule-row-sub">Full day fast</div></div><span class="pts-pill pill-purple">+5 pts</span></div>
+      <div class="rules-header" style="margin-top:12px;">Weekly weigh-in</div>
+      <div class="rule-row"><div><div>Lost 1% vs previous week's weight</div></div><span class="pts-pill pill-amber">+4 pts</span></div>
+      <div class="rule-row"><div><div style="color:var(--white);font-weight:600;">Lost 2%+ vs previous week's weight</div></div><span class="pts-pill pill-amber">+8 pts</span></div>
+      <div class="rule-row"><span>Under 1% change or any gain</span><span class="pts-pill pill-gray">0 pts</span></div>
       <div class="rules-header" style="margin-top:12px;">Prizes</div>
       <div class="prize-row">
         <div class="prize-item"><div class="prize-icon">🥇</div><div class="prize-amount">$500</div><div class="prize-desc">Cash — 1st place</div></div>
@@ -310,9 +307,9 @@ input:focus,select:focus{border-color:var(--fire);}
       <div class="rules-header" style="margin-top:12px;">How it works</div>
       <div class="how-row"><div class="how-num">1</div><div>Starting weights are entered by the commissioner before day one.</div></div>
       <div class="how-row"><div class="how-num">2</div><div>Log steps, workout, fast food, and fasting window each day.</div></div>
-      <div class="how-row"><div class="how-num">3</div><div>Weigh in every Sunday — earn bonus or take the penalty.</div></div>
+      <div class="how-row"><div class="how-num">3</div><div>Weigh in every Sunday — lose 1%+ vs last week and earn bonus points.</div></div>
       <div class="how-row"><div class="how-num">4</div><div>Check Standings for the live leaderboard anytime.</div></div>
-      <div class="how-row"><div class="how-num">5</div><div>Most points after 8 weeks wins $500 cash. 2nd gets $200. 3rd gets a $100 gift card.</div></div>
+      <div class="how-row"><div class="how-num">5</div><div>Most points after 12 weeks wins $500 cash. 2nd gets $200. 3rd gets a $100 gift card.</div></div>
       <div class="integrity-note" style="margin-top:12px;">🛡️ Steps verified via Apple Health, Fitbit, Garmin, or Samsung Health. Workouts must be dedicated exercise sessions — not casual daily walking. Fast food and fasting are honor system. Play fair — this is family!</div>
     </div>
   </div>
@@ -329,7 +326,7 @@ input:focus,select:focus{border-color:var(--fire);}
       <div class="card-title">Contest settings</div>
       <div class="form-row">
         <div class="form-group" style="margin-bottom:0;"><label>Start date</label><input type="date" id="setup-start"></div>
-        <div class="form-group" style="margin-bottom:0;"><label>Duration (weeks)</label><input type="number" id="setup-weeks" value="8" min="1" max="52"></div>
+        <div class="form-group" style="margin-bottom:0;"><label>Duration (weeks)</label><input type="number" id="setup-weeks" value="12" min="1" max="52"></div>
       </div>
       <div class="form-row" style="margin-top:10px;">
         <div class="form-group" style="margin-bottom:0;"><label>Entry fee ($)</label><input type="number" id="setup-fee" value="50" min="0"></div>
@@ -456,7 +453,7 @@ function jsToFS(obj) {
 }
 
 // ── APP STATE ──────────────────────────────────────────────────
-let settings = { startDate:'', weeks:8, fee:50, winner:500 };
+let settings = { startDate:'2026-10-05', weeks:12, fee:50, winner:500 };
 let participants = [];
 let radios = { workout:'none', fastfood:'yes', fasting:'none' };
 
@@ -465,13 +462,11 @@ async function init() {
   const now = new Date();
   const today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
   document.getElementById('log-date').value = today;
-  
   const s = await fbGet('contest/settings');
   if (s) {
     if (s.settings) settings = s.settings;
     if (s.participants) participants = s.participants;
   }
-  
   document.getElementById('header-sub').textContent = `${settings.weeks}-Week Challenge · $${settings.fee} Entry`;
   renderNamePicker();
   renderRecentEntries();
@@ -494,7 +489,7 @@ function showTab(id, btn) {
 // ── RADIO ──────────────────────────────────────────────────────
 function setR(g, v) {
   radios[g] = v;
-  const m = {workout:['none','30','60'], fastfood:['yes','no'], fasting:['none','15','17','19','21']};
+  const m = {workout:['none','30','60'], fastfood:['yes','no'], fasting:['none','16','18','20','22','24']};
   const p = {workout:'wo', fastfood:'ff', fasting:'fast'};
   m[g].forEach(x => { const e = document.getElementById(p[g]+'-'+x); if(e) e.classList.toggle('active', x===v); });
   updatePreview();
@@ -507,7 +502,8 @@ function stepsP(s) {
   if(s>=12000)return 3; if(s>=10000)return 2; if(s>=8000)return 1; return 0;
 }
 function workoutP(w){return w==='60'?4:w==='30'?2:0;}
-function fastingP(f){return{'15':1,'17':2,'19':3,'21':4}[f]||0;}
+// Round 2 fasting: 16=1, 18=2, 20=3, 22=4, 24=5
+function fastingP(f){return{'16':1,'18':2,'20':3,'22':4,'24':5}[f]||0;}
 
 function updatePreview() {
   const sp=stepsP(document.getElementById('log-steps').value);
@@ -543,19 +539,13 @@ async function submitLog() {
   const steps = parseInt(document.getElementById('log-steps').value)||0;
   if (!name) { showErr('log-error', 'Please select your name.'); return; }
   if (!date) { showErr('log-error', 'Please select a date.'); return; }
-  
   const btn = document.getElementById('log-btn');
   btn.disabled = true; btn.textContent = 'Saving...';
-  
   const pts = stepsP(steps) + workoutP(radios.workout) + (radios.fastfood==='no'?1:0) + fastingP(radios.fasting);
   const safeName = name.replace(/[^a-zA-Z0-9]/g, '_');
-  const docId = `${safeName}_${date}`;
-  
   const entry = { name, date, steps, workout:radios.workout, fastfood:radios.fastfood, fasting:radios.fasting, points:pts, ts:Date.now() };
-  
-  const ok = await fbSet(`logs/${docId}`, entry);
+  const ok = await fbSet(`logs/${safeName}_${date}`, entry);
   btn.disabled = false; btn.textContent = 'Save Entry';
-  
   if (ok) { flash('log-success'); renderRecentEntries(); }
   else showErr('log-error', 'Save failed — check connection and try again.');
 }
@@ -588,7 +578,6 @@ function renderWeighTab() {
 async function buildWeighInputs() {
   const week = parseInt(document.getElementById('weigh-week').value)||1;
   const el = document.getElementById('weigh-inputs');
-  
   const weekWeighIns = {};
   const prevWeekWeighIns = {};
   for (const p of participants) {
@@ -601,7 +590,6 @@ async function buildWeighInputs() {
       if (prevWi) prevWeekWeighIns[p.name] = prevWi.weight;
     }
   }
-  
   el.innerHTML = participants.map(p => {
     const val = weekWeighIns[p.name] || '';
     let badge = '';
@@ -611,8 +599,6 @@ async function buildWeighInputs() {
         const pct = (prevWeight - val) / prevWeight * 100;
         if (pct>=2) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +8pts</span>`;
         else if (pct>=1) badge=`<span class="badge badge-green">-${pct.toFixed(1)}% +4pts</span>`;
-        else if (pct<=-2) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -8pts</span>`;
-        else if (pct<=-1) badge=`<span class="badge badge-red">+${Math.abs(pct).toFixed(1)}% -4pts</span>`;
         else badge=`<span class="badge" style="background:var(--ice);color:var(--text-secondary);">${pct.toFixed(1)}% 0pts</span>`;
       }
     }
@@ -627,7 +613,6 @@ async function submitWeighIn() {
   const week = parseInt(document.getElementById('weigh-week').value)||1;
   const btn = document.getElementById('weigh-btn');
   btn.disabled=true; btn.textContent='Saving...';
-  
   let allOk = true;
   for (const p of participants) {
     const safeName = p.name.replace(/[^a-zA-Z0-9]/g, '_');
@@ -639,7 +624,6 @@ async function submitWeighIn() {
       if (!ok) allOk = false;
     }
   }
-  
   btn.disabled=false; btn.textContent='Save Weigh-In';
   if (allOk) { flash('weigh-success'); buildWeighInputs(); }
   else showErr('weigh-error', 'Some saves failed — try again.');
@@ -649,19 +633,16 @@ async function submitWeighIn() {
 async function loadAndRenderBoard() {
   const el = document.getElementById('leaderboard-rows');
   el.innerHTML = '<div class="empty" style="color:var(--mist);">Loading...</div>';
-  
   const [logs, weighIns] = await Promise.all([fbList('logs'), fbList('weighins')]);
-  
   const uniqueDays = new Set(logs.map(l => l.date)).size;
-  let cw = '—';
+  let cw = '--';
   if (settings.startDate) {
     const diff = Math.floor((new Date()-new Date(settings.startDate))/(7*24*60*60*1000))+1;
-    cw = diff>=1&&diff<=settings.weeks ? diff : diff>settings.weeks ? 'Done' : '—';
+    cw = diff>=1&&diff<=settings.weeks ? diff : diff>settings.weeks ? 'Done' : '--';
   }
   document.getElementById('stat-days').textContent = uniqueDays;
   document.getElementById('stat-entries').textContent = logs.length;
   document.getElementById('stat-week').textContent = cw;
-  
   const data = participants.map(p => {
     const pLogs = logs.filter(l => l.name===p.name);
     const dailyPts = pLogs.reduce((s,l)=>s+(l.points||0),0);
@@ -669,7 +650,6 @@ async function loadAndRenderBoard() {
     const ffDays = pLogs.filter(l=>l.fastfood==='no').length;
     const fastDays = pLogs.filter(l=>l.fasting&&l.fasting!=='none').length;
     const avgSteps = pLogs.length ? Math.round(pLogs.reduce((s,l)=>s+(l.steps||0),0)/pLogs.length) : 0;
-    
     let weightBonus=0, pctLost=0;
     if (p.startWeight>0) {
       const pWeighIns = weighIns.filter(w=>w.name===p.name).sort((a,b)=>a.week-b.week);
@@ -678,10 +658,9 @@ async function loadAndRenderBoard() {
       let prevWeight = baseline;
       pWeighIns.filter(w => w.week > 0).forEach(w => {
         const pct = (prevWeight - w.weight) / prevWeight * 100;
+        // Round 2: no penalty for gaining, only bonus for losing
         if(pct>=2) weightBonus+=8;
         else if(pct>=1) weightBonus+=4;
-        else if(pct<=-2) weightBonus-=8;
-        else if(pct<=-1) weightBonus-=4;
         prevWeight = w.weight;
       });
       const latest = [...pWeighIns].sort((a,b)=>b.week-a.week)[0];
@@ -689,11 +668,8 @@ async function loadAndRenderBoard() {
     }
     return { name:p.name, dailyPts, weightBonus, total:dailyPts+weightBonus, workoutDays, ffDays, fastDays, avgSteps, pctLost, logDays:pLogs.length };
   }).sort((a,b)=>b.total-a.total);
-  
   if (!data.length) { el.innerHTML='<div class="empty" style="color:var(--mist);">Add participants in Setup.</div>'; return; }
-  
   window._boardData = data;
-  
   el.innerHTML = data.map((d,i) => {
     const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
@@ -719,24 +695,38 @@ function showDetail(name) {
         <div class="hero-label">total points</div>
       </div>
       <div class="detail-row"><span class="detail-key">Daily pts</span><span class="detail-val">${d.dailyPts}</span></div>
-      <div class="detail-row"><span class="detail-key">Weight bonus/penalty</span><span class="detail-val" style="color:${d.weightBonus>=0?'#2ECC71':'#E74C3C'}">${d.weightBonus>=0?'+':''}${d.weightBonus}</span></div>
+      <div class="detail-row"><span class="detail-key">Weight bonus</span><span class="detail-val" style="color:#2ECC71">+${d.weightBonus}</span></div>
       <div class="detail-row"><span class="detail-key">Days logged</span><span class="detail-val">${d.logDays}</span></div>
       <div class="detail-row"><span class="detail-key">Workout days</span><span class="detail-val">${d.workoutDays}</span></div>
       <div class="detail-row"><span class="detail-key">Fast-food-free days</span><span class="detail-val">${d.ffDays}</span></div>
       <div class="detail-row"><span class="detail-key">Fasting days</span><span class="detail-val">${d.fastDays}</span></div>
       <div class="detail-row"><span class="detail-key">Avg daily steps</span><span class="detail-val">${d.avgSteps.toLocaleString()}</span></div>
-      <div class="detail-row"><span class="detail-key">Weight change</span><span class="detail-val" style="color:${pc}">${d.pctLost>0?'-':d.pctLost<0?'+':''}${Math.abs(d.pctLost).toFixed(1)}%</span></div>
+      <div class="detail-row"><span class="detail-key">Total weight change</span><span class="detail-val" style="color:${pc}">${d.pctLost>0?'-':d.pctLost<0?'+':''}${Math.abs(d.pctLost).toFixed(1)}%</span></div>
     </div>`;
   document.getElementById('detail-card').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // ── WEEKLY CHAMPIONS ───────────────────────────────────────────
+function parseLD(dateStr) {
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function getWeekRange(week) {
+  if (!settings.startDate) return { start:null, end:null };
+  const start = parseLD(settings.startDate);
+  const ws = new Date(start); ws.setDate(start.getDate() + (week-1)*7);
+  const we = new Date(ws); we.setDate(ws.getDate() + 6);
+  const fmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  return { start: fmt(ws), end: fmt(we) };
+}
+
 function renderChampsTab() {
   const sel = document.getElementById('champ-week');
   sel.innerHTML = '';
   let maxWeek = 1;
   if (settings.startDate) {
-    const diff = Math.floor((new Date()-new Date(settings.startDate))/(7*24*60*60*1000))+1;
+    const diff = Math.floor((new Date()-parseLD(settings.startDate))/(7*24*60*60*1000))+1;
     maxWeek = Math.max(1, Math.min(diff, settings.weeks));
   }
   for (let w=1; w<=maxWeek; w++) {
@@ -744,27 +734,79 @@ function renderChampsTab() {
   }
   sel.value = maxWeek;
   loadChampions();
-
-  // Populate audit person dropdown
   const auditSel = document.getElementById('audit-person');
   if (auditSel) {
-    auditSel.innerHTML = '<option value="">— select a participant —</option>' +
+    auditSel.innerHTML = '<option value="">-- select a participant --</option>' +
       participants.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
   }
 }
 
-function getMaxWeek() {
-  let maxWeek = 1;
-  if (settings.startDate) {
-    const diff = Math.floor((new Date()-new Date(settings.startDate))/(7*24*60*60*1000))+1;
-    maxWeek = Math.max(1, Math.min(diff, settings.weeks));
+async function loadChampions() {
+  const week = parseInt(document.getElementById('champ-week').value)||1;
+  const el = document.getElementById('champs-content');
+  el.innerHTML = '<div class="empty" style="color:var(--mist);">Loading...</div>';
+  const { start: weekStartStr, end: weekEndStr } = getWeekRange(week);
+  const rangeEl = document.getElementById('champ-week-range');
+  if (rangeEl && weekStartStr) {
+    const fmtNice = s => { const [y,m,d]=s.split('-'); return `${m}/${d}/${y}`; };
+    const now = new Date();
+    rangeEl.textContent = `Week ${week}: ${fmtNice(weekStartStr)} – ${fmtNice(weekEndStr)} (today is ${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()})`;
   }
-  return maxWeek;
-}
-
-function parseLocalDateGlobal(dateStr) {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return new Date(y, m - 1, d);
+  const [allLogs, allWeighIns] = await Promise.all([fbList('logs'), fbList('weighins')]);
+  const weekLogs = allLogs.filter(l => l.date >= weekStartStr && l.date <= weekEndStr);
+  const fastHoursMap = {'16':16,'18':18,'20':20,'22':22,'24':24};
+  const stats = participants.map(p => {
+    const pLogs = weekLogs.filter(l => l.name === p.name);
+    const totalSteps = pLogs.reduce((s,l)=>s+(l.steps||0),0);
+    const avgSteps = pLogs.length ? Math.round(totalSteps/pLogs.length) : 0;
+    const workoutCount = pLogs.filter(l=>l.workout && l.workout !== 'none').length;
+    const totalFastHours = pLogs.reduce((s,l)=> s + (fastHoursMap[l.fasting]||0), 0);
+    const dailyPts = pLogs.reduce((s,l)=>s+(l.points||0),0);
+    const thisWeekWi = allWeighIns.find(w => w.name===p.name && w.week===week);
+    const prevWeekNum = week === 1 ? 0 : week - 1;
+    const prevWi = allWeighIns.find(w => w.name===p.name && w.week===prevWeekNum);
+    const baseline = prevWi ? prevWi.weight : p.startWeight;
+    let pctChange = null, weighInBonus = 0;
+    if (thisWeekWi && baseline > 0) {
+      pctChange = (baseline - thisWeekWi.weight) / baseline * 100;
+      if (pctChange >= 2) weighInBonus = 8;
+      else if (pctChange >= 1) weighInBonus = 4;
+    }
+    const weeklyPts = dailyPts + weighInBonus;
+    return { name:p.name, totalSteps, avgSteps, workoutCount, totalFastHours, weeklyPts, pctChange, daysLogged: pLogs.length };
+  });
+  if (!stats.some(s => s.daysLogged > 0)) {
+    el.innerHTML = '<div class="empty" style="color:var(--mist);">No entries logged for this week yet.</div>';
+    return;
+  }
+  function topOf(arr, key) {
+    const valid = arr.filter(s => s[key] !== null && s[key] !== undefined && !isNaN(s[key]) && s[key] > 0);
+    if (!valid.length) return [];
+    const top = [...valid].sort((a,b)=>b[key]-a[key])[0][key];
+    return valid.filter(s => s[key] === top);
+  }
+  const mostPoints = topOf(stats, 'weeklyPts');
+  const biggestLoser = topOf(stats.filter(s=>s.pctChange!==null && s.pctChange > 0), 'pctChange');
+  const mostSteps = topOf(stats, 'avgSteps');
+  const mostWorkouts = topOf(stats, 'workoutCount');
+  const mostFasting = topOf(stats, 'totalFastHours');
+  function champRow(icon, label, winners, valFn) {
+    if (!winners.length) return `<div class="champ-row"><div class="champ-icon">${icon}</div><div class="champ-name" style="color:var(--text-muted);">${label}: No data yet</div></div>`;
+    const names = winners.map(w=>w.name).join(' & ');
+    const tied = winners.length > 1 ? ' (tied)' : '';
+    return `<div class="champ-row">
+      <div class="champ-icon">${icon}</div>
+      <div class="champ-name">${names}${tied}<div style="font-size:10px;color:var(--text-muted);font-weight:400;">${label}</div></div>
+      <div class="champ-stat">${valFn(winners[0])}</div>
+    </div>`;
+  }
+  el.innerHTML = `
+    <div class="champ-card">${champRow('🏆','Most Points',mostPoints,w=>w.weeklyPts+' pts')}</div>
+    <div class="champ-card">${champRow('📉','Biggest % Loss',biggestLoser,w=>'-'+w.pctChange.toFixed(1)+'%')}</div>
+    <div class="champ-card">${champRow('👟','Most Steps (avg/day)',mostSteps,w=>w.avgSteps.toLocaleString()+' steps')}</div>
+    <div class="champ-card">${champRow('💪','Most Workouts',mostWorkouts,w=>w.workoutCount+' workouts')}</div>
+    <div class="champ-card">${champRow('⏱️','Most Hours Fasted',mostFasting,w=>w.totalFastHours+' hrs')}</div>
+  `;
 }
 
 async function loadAudit() {
@@ -772,197 +814,55 @@ async function loadAudit() {
   const el = document.getElementById('audit-content');
   if (!name) { el.innerHTML = ''; return; }
   el.innerHTML = '<div class="empty" style="color:var(--mist);">Loading...</div>';
-
-  const p = participants.find(x => x.name === name);
-  if (!p) { el.innerHTML = ''; return; }
-
+  const p = participants.find(x => x.name === name); if(!p) return;
   const [allLogs, allWeighIns] = await Promise.all([fbList('logs'), fbList('weighins')]);
   const pLogs = allLogs.filter(l => l.name === name);
   const pWeighIns = allWeighIns.filter(w => w.name === name);
-  const maxWeek = getMaxWeek();
-
-  const fastHoursMap = {'15':15,'17':17,'19':19,'21':21};
-
-  let rows = '';
-  let runningTotal = 0;
+  let maxWeek = 1;
+  if (settings.startDate) {
+    const diff = Math.floor((new Date()-parseLD(settings.startDate))/(7*24*60*60*1000))+1;
+    maxWeek = Math.max(1, Math.min(diff, settings.weeks));
+  }
+  const fastHoursMap = {'16':16,'18':18,'20':20,'22':22,'24':24};
+  let rows = '', runningTotal = 0;
   let prevWeight = p.startWeight;
-
   for (let week = 1; week <= maxWeek; week++) {
-    let weekStartStr = null, weekEndStr = null;
-    if (settings.startDate) {
-      const start = parseLocalDateGlobal(settings.startDate);
-      const ws = new Date(start);
-      ws.setDate(start.getDate() + (week-1)*7);
-      const we = new Date(ws);
-      we.setDate(ws.getDate() + 6);
-      weekStartStr = ws.getFullYear() + '-' + String(ws.getMonth()+1).padStart(2,'0') + '-' + String(ws.getDate()).padStart(2,'0');
-      weekEndStr = we.getFullYear() + '-' + String(we.getMonth()+1).padStart(2,'0') + '-' + String(we.getDate()).padStart(2,'0');
-    }
-    const weekLogs = pLogs.filter(l => l.date >= weekStartStr && l.date <= weekEndStr);
+    const { start: ws, end: we } = getWeekRange(week);
+    const weekLogs = pLogs.filter(l => l.date >= ws && l.date <= we);
     const dailyPts = weekLogs.reduce((s,l)=>s+(l.points||0),0);
-    const totalSteps = weekLogs.reduce((s,l)=>s+(l.steps||0),0);
-    const avgSteps = weekLogs.length ? Math.round(totalSteps/weekLogs.length) : 0;
+    const avgSteps = weekLogs.length ? Math.round(weekLogs.reduce((s,l)=>s+(l.steps||0),0)/weekLogs.length) : 0;
     const workoutCount = weekLogs.filter(l=>l.workout && l.workout !== 'none').length;
-    const totalFastHours = weekLogs.reduce((s,l)=> s + (fastHoursMap[l.fasting]||0), 0);
+    const totalFastHours = weekLogs.reduce((s,l)=>s+(fastHoursMap[l.fasting]||0),0);
     const ffDays = weekLogs.filter(l=>l.fastfood==='no').length;
-
     const wi = pWeighIns.find(w => w.week === week);
-    let weighInBonus = 0, pctChange = null, weight = wi ? wi.weight : null;
+    let weighInBonus = 0, pctChange = null;
     if (wi && prevWeight > 0) {
       pctChange = (prevWeight - wi.weight) / prevWeight * 100;
       if (pctChange >= 2) weighInBonus = 8;
       else if (pctChange >= 1) weighInBonus = 4;
-      else if (pctChange <= -2) weighInBonus = -8;
-      else if (pctChange <= -1) weighInBonus = -4;
       prevWeight = wi.weight;
     }
-
     const weekTotal = dailyPts + weighInBonus;
     runningTotal += weekTotal;
-
     rows += `<div class="card" style="margin-bottom:8px;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;margin-bottom:6px;color:var(--text-primary);">Week ${week}</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;margin-bottom:6px;color:var(--text-primary);">Week ${week} <span style="font-size:11px;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-weight:400;">${ws} – ${we}</span></div>
       <div class="detail-row"><span class="detail-key">Days logged</span><span class="detail-val">${weekLogs.length}</span></div>
       <div class="detail-row"><span class="detail-key">Daily points</span><span class="detail-val">${dailyPts}</span></div>
-      <div class="detail-row"><span class="detail-key">Weigh-in bonus/penalty</span><span class="detail-val" style="color:${weighInBonus>=0?'#1A6B3C':'#922B21'}">${weighInBonus>=0?'+':''}${weighInBonus}${wi?'':' (no weigh-in)'}</span></div>
+      <div class="detail-row"><span class="detail-key">Weigh-in bonus</span><span class="detail-val" style="color:#1A6B3C;">+${weighInBonus}${wi?'':' (no weigh-in)'}</span></div>
       <div class="detail-row" style="font-weight:700;"><span class="detail-key">Week total</span><span class="detail-val" style="color:var(--fire);">${weekTotal}</span></div>
-      <div class="detail-row"><span class="detail-key">Avg steps</span><span class="detail-val">${avgSteps.toLocaleString()}</span></div>
+      <div class="detail-row"><span class="detail-key">Avg steps/day</span><span class="detail-val">${avgSteps.toLocaleString()}</span></div>
       <div class="detail-row"><span class="detail-key">Workouts</span><span class="detail-val">${workoutCount}</span></div>
-      <div class="detail-row"><span class="detail-key">Fasting hours (total)</span><span class="detail-val">${totalFastHours}</span></div>
+      <div class="detail-row"><span class="detail-key">Fasting hrs (total)</span><span class="detail-val">${totalFastHours}</span></div>
       <div class="detail-row"><span class="detail-key">Fast-food-free days</span><span class="detail-val">${ffDays}</span></div>
-      <div class="detail-row"><span class="detail-key">Weight this week</span><span class="detail-val">${weight ? weight + ' lbs' : '—'}</span></div>
+      <div class="detail-row"><span class="detail-key">Weight</span><span class="detail-val">${wi ? wi.weight+' lbs'+(pctChange!==null?' ('+( pctChange>=0?'-':'+' )+Math.abs(pctChange).toFixed(1)+'%)':'') : '--'}</span></div>
     </div>`;
   }
-
   el.innerHTML = `
     <div class="champ-card" style="margin-bottom:10px;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;">${name} — Running Total: <span style="color:var(--fire);">${runningTotal} pts</span></div>
-      <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Should match this person's total on the Standings tab</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;">${name} -- Running Total: <span style="color:var(--fire);">${runningTotal} pts</span></div>
+      <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Should match Standings total</div>
     </div>
-    ${rows}
-  `;
-}
-
-async function loadChampions() {
-  const week = parseInt(document.getElementById('champ-week').value)||1;
-  const el = document.getElementById('champs-content');
-  el.innerHTML = '<div class="empty" style="color:var(--mist);">Loading...</div>';
-
-  const [allLogs, allWeighIns] = await Promise.all([fbList('logs'), fbList('weighins')]);
-
-  // Determine the date range for this week based on contest start date
-  // Parse dates as local-time y/m/d to avoid UTC timezone shifting entries into the wrong week
-  function parseLocalDate(dateStr) {
-    const [y, m, d] = dateStr.split('-').map(Number);
-    return new Date(y, m - 1, d);
-  }
-
-  let weekStartStr = null, weekEndStr = null;
-  if (settings.startDate) {
-    const start = parseLocalDate(settings.startDate);
-    const ws = new Date(start);
-    ws.setDate(start.getDate() + (week-1)*7);
-    const we = new Date(ws);
-    we.setDate(ws.getDate() + 6);
-    // Convert to comparable strings (YYYY-MM-DD) instead of Date objects to avoid time-of-day issues
-    weekStartStr = ws.getFullYear() + '-' + String(ws.getMonth()+1).padStart(2,'0') + '-' + String(ws.getDate()).padStart(2,'0');
-    weekEndStr = we.getFullYear() + '-' + String(we.getMonth()+1).padStart(2,'0') + '-' + String(we.getDate()).padStart(2,'0');
-  }
-
-  const rangeEl = document.getElementById('champ-week-range');
-  if (rangeEl) {
-    if (weekStartStr && weekEndStr) {
-      const fmtNice = (s) => { const [y,m,d] = s.split('-'); return `${m}/${d}/${y}`; };
-      rangeEl.textContent = `Week ${week}: ${fmtNice(weekStartStr)} – ${fmtNice(weekEndStr)} (today is ${(new Date()).getMonth()+1}/${(new Date()).getDate()}/${(new Date()).getFullYear()})`;
-    } else {
-      rangeEl.textContent = 'No contest start date set — go to Setup to add one';
-    }
-  }
-
-  function inWeek(dateStr) {
-    if (!weekStartStr || !dateStr) return false;
-    return dateStr >= weekStartStr && dateStr <= weekEndStr;
-  }
-
-  const weekLogs = allLogs.filter(l => inWeek(l.date));
-
-  // Per-participant weekly aggregates
-  const stats = participants.map(p => {
-    const pLogs = weekLogs.filter(l => l.name === p.name);
-    const totalSteps = pLogs.reduce((s,l)=>s+(l.steps||0),0);
-    const avgSteps = pLogs.length ? Math.round(totalSteps/pLogs.length) : 0;
-    const workoutCount = pLogs.filter(l=>l.workout && l.workout !== 'none').length;
-    const fastHoursMap = {'15':15,'17':17,'19':19,'21':21};
-    const totalFastHours = pLogs.reduce((s,l)=> s + (fastHoursMap[l.fasting]||0), 0);
-    const ffDays = pLogs.filter(l=>l.fastfood==='no').length;
-    const dailyPts = pLogs.reduce((s,l)=>s+(l.points||0),0);
-
-    // Weight % change for this week (vs previous week) + weigh-in bonus/penalty
-    const thisWeekWi = allWeighIns.find(w => w.name===p.name && w.week===week);
-    const prevWeekNum = week === 1 ? 0 : week - 1;
-    const prevWi = allWeighIns.find(w => w.name===p.name && w.week===prevWeekNum);
-    const baseline = prevWi ? prevWi.weight : p.startWeight;
-    let pctChange = null;
-    let weighInBonus = 0;
-    if (thisWeekWi && baseline > 0) {
-      pctChange = (baseline - thisWeekWi.weight) / baseline * 100;
-      if (pctChange >= 2) weighInBonus = 8;
-      else if (pctChange >= 1) weighInBonus = 4;
-      else if (pctChange <= -2) weighInBonus = -8;
-      else if (pctChange <= -1) weighInBonus = -4;
-    }
-    const weeklyPts = dailyPts + weighInBonus;
-
-    return { name:p.name, totalSteps, avgSteps, workoutCount, totalFastHours, ffDays, weeklyPts, pctChange, daysLogged: pLogs.length };
-  });
-
-  if (!stats.some(s => s.daysLogged > 0)) {
-    el.innerHTML = '<div class="empty" style="color:var(--mist);">No entries logged for this week yet.</div>';
-    return;
-  }
-
-  function topOf(arr, key, dir='desc') {
-    const valid = arr.filter(s => s[key] !== null && s[key] !== undefined && !isNaN(s[key]) && s[key] !== 0);
-    if (!valid.length) return [];
-    const sorted = [...valid].sort((a,b)=> dir==='desc' ? b[key]-a[key] : a[key]-b[key]);
-    const topVal = sorted[0][key];
-    return sorted.filter(s => s[key] === topVal);
-  }
-
-  const mostSteps = topOf(stats, 'avgSteps');
-  const mostWorkouts = topOf(stats, 'workoutCount');
-  const mostFastHours = topOf(stats, 'totalFastHours');
-  const biggestLoser = topOf(stats.filter(s=>s.pctChange!==null), 'pctChange');
-  const mostPoints = topOf(stats, 'weeklyPts');
-
-  function champRow(icon, label, winners, statKey, statSuffix) {
-    if (!winners || !winners.length) return `<div class="champ-row"><div class="champ-icon">${icon}</div><div class="champ-name" style="color:var(--text-muted);">${label}: No data yet</div></div>`;
-    const names = winners.map(w => w.name).join(' & ');
-    const statText = winners[0][statKey] + statSuffix;
-    return `<div class="champ-row">
-      <div class="champ-icon">${icon}</div>
-      <div class="champ-name">${names}${winners.length>1?' (tied)':''}<div style="font-size:10px;color:var(--text-muted);font-weight:400;">${label}</div></div>
-      <div class="champ-stat">${statText}</div>
-    </div>`;
-  }
-
-  el.innerHTML = `
-    <div class="champ-card">
-      ${champRow('🏆', 'Most Points', mostPoints, 'weeklyPts', ' pts')}
-    </div>
-    <div class="champ-card">
-      ${biggestLoser.length ? champRow('📉', 'Biggest % Loss', biggestLoser.map(w=>({...w, pctChangeDisplay:(w.pctChange>=0?'-':'+')+Math.abs(w.pctChange).toFixed(1)+'%'})), 'pctChangeDisplay', '') : champRow('📉','Biggest % Loss',[],'','')}
-    </div>
-    <div class="champ-card">
-      ${champRow('👟', 'Most Steps (avg/day)', mostSteps.map(w=>({...w, avgStepsDisplay:w.avgSteps.toLocaleString()})), 'avgStepsDisplay', ' steps')}
-    </div>
-    <div class="champ-card">
-      ${champRow('💪', 'Most Workouts', mostWorkouts, 'workoutCount', ' workouts')}
-    </div>
-    <div class="champ-card">
-      ${champRow('⏱️', 'Most Hours Fasted (total)', mostFastHours, 'totalFastHours', ' hrs')}
-    </div>
-  `;
+    ${rows}`;
 }
 
 // ── SETUP ──────────────────────────────────────────────────────
@@ -977,7 +877,7 @@ function renderSetupTab() {
 async function saveSettings() {
   settings = {
     startDate: document.getElementById('setup-start').value,
-    weeks: parseInt(document.getElementById('setup-weeks').value)||8,
+    weeks: parseInt(document.getElementById('setup-weeks').value)||12,
     fee: parseFloat(document.getElementById('setup-fee').value)||50,
     winner: parseFloat(document.getElementById('setup-winner').value)||500
   };
@@ -1029,21 +929,18 @@ function checkPin(btn) {
 }
 
 async function resetContest() {
-  const confirm1 = prompt('Type RESET to confirm clearing all contest data:');
-  if (confirm1 !== 'RESET') { alert('Reset cancelled.'); return; }
-  
+  const c = prompt('Type RESET to confirm clearing all contest data:');
+  if (c !== 'RESET') { alert('Reset cancelled.'); return; }
   const logs = await fbList('logs');
   for (const log of logs) {
-    const safeName = log.name ? log.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
-    await fbDelete(`logs/${safeName}_${log.date}`);
+    const sn = log.name ? log.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
+    await fbDelete(`logs/${sn}_${log.date}`);
   }
-  
   const weighIns = await fbList('weighins');
   for (const wi of weighIns) {
-    const safeName = wi.name ? wi.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
-    await fbDelete(`weighins/${safeName}_${wi.week}`);
+    const sn = wi.name ? wi.name.replace(/[^a-zA-Z0-9]/g,'_') : 'unknown';
+    await fbDelete(`weighins/${sn}_${wi.week}`);
   }
-  
   flash('reset-success');
 }
 
