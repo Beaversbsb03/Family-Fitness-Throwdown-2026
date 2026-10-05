@@ -576,7 +576,8 @@ function renderWeighTab() {
 }
 
 async function buildWeighInputs() {
-  const week = parseInt(document.getElementById('weigh-week').value)||1;
+  const weekVal = document.getElementById('weigh-week').value;
+  const week = weekVal === '' ? 1 : parseInt(weekVal);
   const el = document.getElementById('weigh-inputs');
   const weekWeighIns = {};
   const prevWeekWeighIns = {};
@@ -610,7 +611,8 @@ async function buildWeighInputs() {
 }
 
 async function submitWeighIn() {
-  const week = parseInt(document.getElementById('weigh-week').value)||1;
+  const weekVal = document.getElementById('weigh-week').value;
+  const week = weekVal === '' ? 1 : parseInt(weekVal);
   // Week 0 (starting weights) is commissioner-only
   if (week === 0) {
     const pin = prompt('Week 0 starting weights are commissioner-only. Enter PIN:');
