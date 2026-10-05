@@ -611,6 +611,14 @@ async function buildWeighInputs() {
 
 async function submitWeighIn() {
   const week = parseInt(document.getElementById('weigh-week').value)||1;
+  // Week 0 (starting weights) is commissioner-only
+  if (week === 0) {
+    const pin = prompt('Week 0 starting weights are commissioner-only. Enter PIN:');
+    if (pin !== '5150') {
+      if (pin !== null) alert('Incorrect PIN. Starting weights can only be set by the commissioner.');
+      return;
+    }
+  }
   const btn = document.getElementById('weigh-btn');
   btn.disabled=true; btn.textContent='Saving...';
   let allOk = true;
