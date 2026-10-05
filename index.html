@@ -904,7 +904,16 @@ async function saveParticipants() {
     if (el) { const v=parseFloat(el.value); if(!isNaN(v)&&v>0) p.startWeight=v; }
   });
   const ok = await fbSet('contest/settings', { settings, participants });
-  if (ok) { flash('part-success'); renderChips(); renderNamePicker(); }
+  if (ok) {
+    // Also save starting weights as Week 0 weigh-in entries so they show in Weigh-In tab
+    for (const p of participants) {
+      if (p.startWeight > 0) {
+        const safeName = p.name.replace(/[^a-zA-Z0-9]/g, '_');
+        await fbSet(`weighins/${safeName}_0`, { name:p.name, week:0, weight:p.startWeight });
+      }
+    }
+    flash('part-success'); renderChips(); renderNamePicker();
+  }
   else showErr('part-error','Save failed.');
 }
 
